@@ -41,7 +41,7 @@ async def prepare_core(
     user_dao = await user_dao_factory(dao_factory=dao_factory)
 
     async with (
-        KafkaEventPublisher.construct(config=config) as event_publisher,  # type: ignore
+        KafkaEventPublisher.construct(config=config) as event_publisher,
     ):
         notification_emitter = NotificationEmitter(
             config=config, event_publisher=event_publisher
