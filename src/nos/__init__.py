@@ -12,12 +12,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
-"""Used to define the location of the main FastAPI app object."""
+"""The Notification Orchestration Service controls the creation of notification events."""
 
-# flake8: noqa
-# pylint: skip-file
+from importlib.metadata import version
 
-# Please adapt to package structure:
-from my_microservice.api.main import app
+__version__ = version(__package__)

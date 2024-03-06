@@ -12,13 +12,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
-"""Test dummy."""
+"""DAO interface for accessing the database."""
 
-from my_microservice.core.greeting import generate_greeting
+from hexkit.protocols.dao import DaoSurrogateId, ResourceNotFoundError
 
+from nos.core import models
 
-def test_dummy():
-    """A very simple example test."""
-    greeting = generate_greeting("monde", "French", True)
-    assert greeting.message == "Salut monde!"
+__all__ = ["UserDaoPort", "ResourceNotFoundError"]
+
+# ports described by type aliases:
+UserDaoPort = DaoSurrogateId[models.User, models.UserData]

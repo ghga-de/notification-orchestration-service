@@ -12,22 +12,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
-"""Entrypoint of the package."""
+"""DAO translator constructor"""
 
-import asyncio
+from hexkit.protocols.dao import DaoFactoryProtocol
 
-from ghga_service_commons.api import run_server
-
-from .api.main import app  # noqa: F401 pylint: disable=unused-import
-from .config import CONFIG, Config
-
-
-def run(config: Config = CONFIG):
-    """Run the service."""
-    # Please adapt to package name
-    asyncio.run(run_server(app="my_microservice.__main__:app", config=config))
+from nos.core import models
+from nos.ports.outbound.dao import UserDaoPort
 
 
-if __name__ == "__main__":
-    run()
+async def user_dao_factory(*, dao_factory: DaoFactoryProtocol) -> UserDaoPort:
+    """Construct a UserDaoPort from the provided dao_factory"""
+    return await dao_factory.get_dao(
+        name="users",
+        dto_model=models.User,
+        id_field="id",
+        dto_creation_model=models.UserData,
+    )

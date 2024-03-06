@@ -12,9 +12,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
-"""Short description of package."""  # Please adapt to package
+"""Outbound port for sending notifications."""
 
-from importlib.metadata import version
+from abc import ABC, abstractmethod
 
-__version__ = version(__package__)
+__all__ = ["NotificationEmitterPort"]
+
+
+class NotificationEmitterPort(ABC):
+    """Emits results of a calculation."""
+
+    @abstractmethod
+    async def notify(
+        self, *, email: str, full_name: str, subject: str, text: str
+    ) -> None:
+        """Send notification to the specified email address."""
+        ...
