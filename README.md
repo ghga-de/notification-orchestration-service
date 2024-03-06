@@ -9,7 +9,9 @@ The Notification Orchestration Service controls the creation of notification eve
 
 <!-- Please provide a short overview of the features of this service. -->
 
-Here you should provide a short summary of the purpose of this microservice.
+The Notification Orchestration Service (NOS) uses data harvested from events published
+by various services to form Notification events, which are subsequently consumed by the
+Notification Service (NS) for dissemination.
 
 
 ## Installation
