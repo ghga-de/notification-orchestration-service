@@ -60,8 +60,8 @@ class OrchestratorPort(ABC):
     async def process_access_request_denied(self, *, user_id: str, dataset_id: str):
         """Process an Access Request Denied event.
 
-        A confirmation notification is sent to the data steward.
-
-        Another notification is sent to the data requester telling them that the request
+        One notification is sent to the data requester telling them that the request
         was denied.
+
+        Another confirmation notification is sent to the data steward.
         """
