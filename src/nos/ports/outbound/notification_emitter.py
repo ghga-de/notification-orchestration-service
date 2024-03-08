@@ -24,7 +24,7 @@ __all__ = ["NotificationEmitterPort"]
 
 
 class NotificationEmitterPort(ABC):
-    """Emits results of a calculation."""
+    """Emits notification events."""
 
     @abstractmethod
     async def notify(
