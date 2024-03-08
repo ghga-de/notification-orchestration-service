@@ -170,9 +170,9 @@
       ],
       "title": "Log Format"
     },
-    "central_data_steward_email": {
+    "central_data_stewardship_email": {
       "description": "The email address of the central data steward.",
-      "title": "Central Data Steward Email",
+      "title": "Central Data Stewardship Email",
       "type": "string"
     }
   },
@@ -187,7 +187,7 @@
     "access_request_denied_type",
     "service_instance_id",
     "kafka_servers",
-    "central_data_steward_email"
+    "central_data_stewardship_email"
   ],
   "title": "ModSettings",
   "type": "object"

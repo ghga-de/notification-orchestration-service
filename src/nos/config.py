@@ -45,7 +45,7 @@ class Config(
         ),
     )
 
-    central_data_steward_email: str = Field(
+    central_data_stewardship_email: str = Field(
         default=...,
         description="The email address of the central data steward.",
     )

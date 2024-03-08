@@ -1,5 +1,5 @@
 service_instance_id: "1"
-central_data_steward_email: "test@test.abc"
+central_data_stewardship_email: "test@test.abc"
 db_connection_str: mongodb://localhost:27017
 db_name: users
 kafka_servers: ["kafka:9092"]

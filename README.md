@@ -205,7 +205,7 @@ The service requires the following configuration parameters:
   ```
 
 
-- **`central_data_steward_email`** *(string)*: The email address of the central data steward.
+- **`central_data_stewardship_email`** *(string)*: The email address of the central data steward.
 
 
 ### Usage:

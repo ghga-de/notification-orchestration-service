@@ -104,7 +104,7 @@ async def test_access_request(
     )
 
     data_steward_notification = Notification(
-        recipient_email=joint_fixture.config.central_data_steward_email,
+        recipient_email=joint_fixture.config.central_data_stewardship_email,
         subject=ds_notification_content.subject,
         recipient_name="Data Steward",
         plaintext_body=ds_notification_content.text.format(**ds_kwargs),
