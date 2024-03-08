@@ -46,8 +46,8 @@ class OrchestratorPort(ABC):
 
         Raises:
             - MissingUserError: When the provided user ID does not exist in the DB.
-            - KeyError: When there is a problem with the values used to perform the
-            notification text interpolation.
+            - NotificationInterpolationError: When there is a problem with the values
+            used to perform the notification text interpolation.
         """
 
     @abstractmethod
@@ -62,8 +62,8 @@ class OrchestratorPort(ABC):
 
         Raises:
             - MissingUserError: When the provided user ID does not exist in the DB.
-            - KeyError: When there is a problem with the values used to perform the
-            notification text interpolation.
+            - NotificationInterpolationError: When there is a problem with the values
+            used to perform the notification text interpolation.
         """
 
     @abstractmethod
@@ -77,6 +77,6 @@ class OrchestratorPort(ABC):
 
         Raises:
             - MissingUserError: When the provided user ID does not exist in the DB.
-            - KeyError: When there is a problem with the values used to perform the
-            notification text interpolation.
+            - NotificationInterpolationError: When there is a problem with the values
+            used to perform the notification text interpolation.
         """

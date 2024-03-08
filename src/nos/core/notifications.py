@@ -31,6 +31,18 @@ __all__ = [
 ]
 
 
+class NotificationError(RuntimeError):
+    """Raised for notification-related errors."""
+
+
+class NotificationInterpolationError(NotificationError):
+    """Raised when notification interpolation fails."""
+
+    def __init__(self, interp_args: dict) -> None:
+        message = f"Unable to format notification text with kwargs {interp_args}"
+        super().__init__(message)
+
+
 class Notification(NamedTuple):
     """A notification with a subject and a body text."""
 
@@ -43,17 +55,15 @@ class Notification(NamedTuple):
         Returns a new Notification object with the subject and interpolated
         text of the original.
 
-        Raises a KeyError if the required template keys are not provided.
+        Raises a NotificationInterpolationError if the required template keys are not
+        provided.
         """
         try:
             return Notification(self.subject, self.text.format(**kwargs))
-        except KeyError:
-            log.error(
-                "Unable to format notification text with kwargs %s",
-                kwargs,
-                extra={"text": self.text},
-            )
-            raise
+        except KeyError as err:
+            interpolation_error = NotificationInterpolationError(kwargs)
+            log.error(interpolation_error)
+            raise interpolation_error from err
 
 
 ACCESS_REQUEST_CREATED_TO_USER = Notification(
