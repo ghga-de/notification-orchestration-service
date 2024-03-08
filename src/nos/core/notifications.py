@@ -77,7 +77,7 @@ ACCESS_REQUEST_ALLOWED_TO_USER = Notification(
 We are glad to inform you that your request to download the dataset
 {dataset_id} has been accepted.
 
-You can now start download the dataset as explained in the GHGA Data Portal.
+You can now start downloading the dataset as explained in the GHGA Data Portal.
 """,
 )
 

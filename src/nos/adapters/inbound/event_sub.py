@@ -83,25 +83,16 @@ class EventSubTranslator(EventSubscriberProtocol):
         ]
         self._config = config
         self._orchestrator = orchestrator
+        self._access_request_map = {
+            config.access_request_created_type: self._orchestrator.process_access_request_created,
+            config.access_request_allowed_type: self._orchestrator.process_access_request_allowed,
+            config.access_request_denied_type: self._orchestrator.process_access_request_denied,
+        }
 
-    async def _notify_access_request_created(self, payload: JsonObject) -> None:
-        """Notify that an access request was created"""
+    async def _handle_access_request(self, type_: str, payload: JsonObject) -> None:
+        """Send notifications for an access request-related event."""
         validated_payload = get_validated_payload(payload, AccessRequestDetails)
-        await self._orchestrator.process_access_request_created(
-            user_id=validated_payload.user_id, dataset_id=validated_payload.dataset_id
-        )
-
-    async def _notify_access_request_allowed(self, payload: JsonObject) -> None:
-        """Notify that an access request was allowed"""
-        validated_payload = get_validated_payload(payload, AccessRequestDetails)
-        await self._orchestrator.process_access_request_allowed(
-            user_id=validated_payload.user_id, dataset_id=validated_payload.dataset_id
-        )
-
-    async def _notify_access_request_denied(self, payload: JsonObject) -> None:
-        """Notify that an access request was denied"""
-        validated_payload = get_validated_payload(payload, AccessRequestDetails)
-        await self._orchestrator.process_access_request_denied(
+        await self._access_request_map[type_](
             user_id=validated_payload.user_id, dataset_id=validated_payload.dataset_id
         )
 
@@ -109,9 +100,5 @@ class EventSubTranslator(EventSubscriberProtocol):
         self, *, payload: JsonObject, type_: Ascii, topic: Ascii
     ) -> None:
         """Consumes an event"""
-        if type_ == self._config.access_request_created_type:
-            await self._notify_access_request_created(payload)
-        elif type_ == self._config.access_request_allowed_type:
-            await self._notify_access_request_allowed(payload)
-        elif type_ == self._config.access_request_denied_type:
-            await self._notify_access_request_denied(payload)
+        if type_ in self._access_request_map:
+            await self._handle_access_request(type_, payload)
