@@ -37,13 +37,16 @@ class Notification(NamedTuple):
     subject: str
     text: str
 
-    def format_text(self, **kwargs):
+    def formatted(self, **kwargs) -> "Notification":
         """Perform string interpolation on the `text` attribute.
+
+        Returns a new Notification object with the subject and interpolated
+        text of the original.
 
         Raises a KeyError if the required template keys are not provided.
         """
         try:
-            return self.text.format(**kwargs)
+            return Notification(self.subject, self.text.format(**kwargs))
         except KeyError:
             log.error(
                 "Unable to format notification text with kwargs %s",

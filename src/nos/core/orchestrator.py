@@ -74,8 +74,7 @@ class Orchestrator(OrchestratorPort):
         await self._notification_emitter.notify(
             email=user.email,
             full_name=user.name,
-            subject=notifications.ACCESS_REQUEST_CREATED_TO_USER.subject,
-            text=notifications.ACCESS_REQUEST_CREATED_TO_USER.format_text(
+            notification=notifications.ACCESS_REQUEST_CREATED_TO_USER.formatted(
                 dataset_id=dataset_id
             ),
         )
@@ -85,8 +84,7 @@ class Orchestrator(OrchestratorPort):
         await self._notification_emitter.notify(
             email=self._config.central_data_steward_email,
             full_name=DATA_STEWARD_NAME,
-            subject=notifications.ACCESS_REQUEST_CREATED_TO_DS.subject,
-            text=notifications.ACCESS_REQUEST_CREATED_TO_DS.format_text(
+            notification=notifications.ACCESS_REQUEST_CREATED_TO_DS.formatted(
                 full_user_name=user.name, email=user.email, dataset_id=dataset_id
             ),
         )
@@ -125,8 +123,7 @@ class Orchestrator(OrchestratorPort):
         await self._notification_emitter.notify(
             email=user.email,
             full_name=user.name,
-            subject=notifications.ACCESS_REQUEST_ALLOWED_TO_USER.subject,
-            text=notifications.ACCESS_REQUEST_ALLOWED_TO_USER.format_text(
+            notification=notifications.ACCESS_REQUEST_ALLOWED_TO_USER.formatted(
                 dataset_id=dataset_id
             ),
         )
@@ -136,8 +133,7 @@ class Orchestrator(OrchestratorPort):
         await self._notification_emitter.notify(
             email=self._config.central_data_steward_email,
             full_name=DATA_STEWARD_NAME,
-            subject=notifications.ACCESS_REQUEST_ALLOWED_TO_DS.subject,
-            text=notifications.ACCESS_REQUEST_ALLOWED_TO_DS.format_text(
+            notification=notifications.ACCESS_REQUEST_ALLOWED_TO_DS.formatted(
                 full_user_name=user.name, dataset_id=dataset_id
             ),
         )
@@ -175,8 +171,7 @@ class Orchestrator(OrchestratorPort):
         await self._notification_emitter.notify(
             email=user.email,
             full_name=user.name,
-            subject=notifications.ACCESS_REQUEST_DENIED_TO_USER.subject,
-            text=notifications.ACCESS_REQUEST_DENIED_TO_USER.format_text(
+            notification=notifications.ACCESS_REQUEST_DENIED_TO_USER.formatted(
                 dataset_id=dataset_id
             ),
         )
@@ -186,8 +181,7 @@ class Orchestrator(OrchestratorPort):
         await self._notification_emitter.notify(
             email=self._config.central_data_steward_email,
             full_name=DATA_STEWARD_NAME,
-            subject=notifications.ACCESS_REQUEST_DENIED_TO_DS.subject,
-            text=notifications.ACCESS_REQUEST_DENIED_TO_DS.format_text(
+            notification=notifications.ACCESS_REQUEST_DENIED_TO_DS.formatted(
                 full_user_name=user.name, dataset_id=dataset_id
             ),
         )

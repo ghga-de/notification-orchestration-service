@@ -21,6 +21,7 @@ from hexkit.protocols.eventpub import EventPublisherProtocol
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
+from nos.core.notifications import Notification
 from nos.ports.outbound.notification_emitter import NotificationEmitterPort
 
 __all__ = ["NotificationEmitterConfig", "NotificationEmitter"]
@@ -56,14 +57,14 @@ class NotificationEmitter(NotificationEmitterPort):
         self._event_publisher = event_publisher
 
     async def notify(
-        self, *, email: str, full_name: str, subject: str, text: str
+        self, *, email: str, full_name: str, notification: Notification
     ) -> None:
         """Send notification to the specified email address."""
         payload: JsonObject = event_schemas.Notification(
             recipient_email=email,
             recipient_name=full_name,
-            subject=subject,
-            plaintext_body=text,
+            subject=notification.subject,
+            plaintext_body=notification.text,
         ).model_dump()
 
         await self._event_publisher.publish(
