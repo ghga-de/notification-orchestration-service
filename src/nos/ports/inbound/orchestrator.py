@@ -36,47 +36,12 @@ class OrchestratorPort(ABC):
             super().__init__(message)
 
     @abstractmethod
-    async def process_access_request_created(self, *, user_id: str, dataset_id: str):
-        """Processes an Access Request Created event.
-
-        One notification is sent to the data requester to confirm that their request
-        was created.
-
-        Another notification is sent to the data steward to inform them of the request.
+    async def process_access_request_notification(
+        self, *, event_type: str, user_id: str, dataset_id: str
+    ):
+        """Handle notifications for access requests.
 
         Raises:
-            - MissingUserError: When the provided user ID does not exist in the DB.
-            - NotificationInterpolationError: When there is a problem with the values
-            used to perform the notification text interpolation.
-        """
-
-    @abstractmethod
-    async def process_access_request_allowed(self, *, user_id: str, dataset_id: str):
-        """Process an Access Request Allowed event.
-
-        One notification is sent to the data requester to inform them that the request
-        has been approved/allowed.
-
-        Another notification is sent to the data steward confirming that the request
-        was allowed.
-
-        Raises:
-            - MissingUserError: When the provided user ID does not exist in the DB.
-            - NotificationInterpolationError: When there is a problem with the values
-            used to perform the notification text interpolation.
-        """
-
-    @abstractmethod
-    async def process_access_request_denied(self, *, user_id: str, dataset_id: str):
-        """Process an Access Request Denied event.
-
-        One notification is sent to the data requester telling them that the request
-        was denied.
-
-        Another confirmation notification is sent to the data steward.
-
-        Raises:
-            - MissingUserError: When the provided user ID does not exist in the DB.
-            - NotificationInterpolationError: When there is a problem with the values
-            used to perform the notification text interpolation.
+            - MissingUserError:
+                When the provided user ID does not exist in the DB.
         """

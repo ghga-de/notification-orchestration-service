@@ -83,22 +83,23 @@ class EventSubTranslator(EventSubscriberProtocol):
         ]
         self._config = config
         self._orchestrator = orchestrator
-        self._access_request_map = {
-            config.access_request_created_type: self._orchestrator.process_access_request_created,
-            config.access_request_allowed_type: self._orchestrator.process_access_request_allowed,
-            config.access_request_denied_type: self._orchestrator.process_access_request_denied,
-        }
 
     async def _handle_access_request(self, type_: str, payload: JsonObject) -> None:
         """Send notifications for an access request-related event."""
         validated_payload = get_validated_payload(payload, AccessRequestDetails)
-        await self._access_request_map[type_](
-            user_id=validated_payload.user_id, dataset_id=validated_payload.dataset_id
+        await self._orchestrator.process_access_request_notification(
+            event_type=type_,
+            user_id=validated_payload.user_id,
+            dataset_id=validated_payload.dataset_id,
         )
 
     async def _consume_validated(
         self, *, payload: JsonObject, type_: Ascii, topic: Ascii
     ) -> None:
         """Consumes an event"""
-        if type_ in self._access_request_map:
+        if type_ in (
+            self._config.access_request_created_type,
+            self._config.access_request_allowed_type,
+            self._config.access_request_denied_type,
+        ):
             await self._handle_access_request(type_, payload)

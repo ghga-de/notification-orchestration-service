@@ -18,7 +18,9 @@
 
 import logging
 
+from nos.config import Config
 from nos.core import notifications
+from nos.core.models import User
 from nos.ports.inbound.orchestrator import OrchestratorPort
 from nos.ports.outbound.dao import ResourceNotFoundError, UserDaoPort
 from nos.ports.outbound.notification_emitter import NotificationEmitterPort
@@ -34,7 +36,7 @@ class Orchestrator(OrchestratorPort):
     def __init__(
         self,
         *,
-        config,
+        config: Config,
         user_dao: UserDaoPort,
         notification_emitter: NotificationEmitterPort,
     ):
@@ -42,19 +44,20 @@ class Orchestrator(OrchestratorPort):
         self._user_dao = user_dao
         self._notification_emitter = notification_emitter
 
-    async def process_access_request_created(self, *, user_id: str, dataset_id: str):
-        """Processes an Access Request Created event.
-
-        One notification is sent to the data requester to confirm that their request
-        was created.
-
-        Another notification is sent to the data steward to inform them of the request.
+    async def process_access_request_notification(
+        self, *, event_type: str, user_id: str, dataset_id: str
+    ):
+        """Handle notifications for access requests.
 
         Raises:
-            - MissingUserError: When the provided user ID does not exist in the DB.
-            - NotificationInterpolationError: When there is a problem with the values
-            used to perform the notification text interpolation.
+            - MissingUserError:
+                When the provided user ID does not exist in the DB.
         """
+        method_map = {
+            self._config.access_request_created_type: self._access_request_created,
+            self._config.access_request_allowed_type: self._access_request_allowed,
+            self._config.access_request_denied_type: self._access_request_denied,
+        }
         extra = {  # for error logging
             "user_id": user_id,
             "dataset_id": dataset_id,
@@ -70,6 +73,21 @@ class Orchestrator(OrchestratorPort):
             log.error(error, extra=extra)
             raise error from err
 
+        await method_map[event_type](user=user, dataset_id=dataset_id)
+
+    async def _access_request_created(self, *, user: User, dataset_id: str):
+        """Processes an Access Request Created event.
+
+        One notification is sent to the data requester to confirm that their request
+        was created.
+
+        Another notification is sent to the data steward to inform them of the request.
+
+        Raises:
+            - NotificationInterpolationError:
+                When there is a problem with the values used to perform the notification
+                text interpolation.
+        """
         # Send a confirmation email notification to the Data Requester
         await self._notification_emitter.notify(
             email=user.email,
@@ -82,7 +100,7 @@ class Orchestrator(OrchestratorPort):
 
         # Send a notification to the data steward
         await self._notification_emitter.notify(
-            email=self._config.central_data_steward_email,
+            email=self._config.central_data_stewardship_email,
             full_name=DATA_STEWARD_NAME,
             notification=notifications.ACCESS_REQUEST_CREATED_TO_DS.formatted(
                 full_user_name=user.name, email=user.email, dataset_id=dataset_id
@@ -90,7 +108,7 @@ class Orchestrator(OrchestratorPort):
         )
         log.info("Sent Access Request Created notification to data steward")
 
-    async def process_access_request_allowed(self, *, user_id: str, dataset_id: str):
+    async def _access_request_allowed(self, *, user: User, dataset_id: str):
         """Process an Access Request Allowed event.
 
         One notification is sent to the data requester to inform them that the request
@@ -100,25 +118,10 @@ class Orchestrator(OrchestratorPort):
         was allowed.
 
         Raises:
-            - MissingUserError: When the provided user ID does not exist in the DB.
-            - NotificationInterpolationError: When there is a problem with the values
-            used to perform the notification text interpolation.
+            - NotificationInterpolationError:
+                When there is a problem with the values used to perform the notification
+                text interpolation.
         """
-        extra = {  # for error logging
-            "user_id": user_id,
-            "dataset_id": dataset_id,
-            "notification_name": "Access Request Allowed",
-        }
-
-        try:
-            user = await self._user_dao.get_by_id(user_id)
-        except ResourceNotFoundError as err:
-            error = self.MissingUserError(
-                user_id=user_id, notification_name=extra["notification_name"]
-            )
-            log.error(error, extra=extra)
-            raise error from err
-
         # Send a notification to the data requester
         await self._notification_emitter.notify(
             email=user.email,
@@ -131,7 +134,7 @@ class Orchestrator(OrchestratorPort):
 
         # Send a confirmation email to the data steward
         await self._notification_emitter.notify(
-            email=self._config.central_data_steward_email,
+            email=self._config.central_data_stewardship_email,
             full_name=DATA_STEWARD_NAME,
             notification=notifications.ACCESS_REQUEST_ALLOWED_TO_DS.formatted(
                 full_user_name=user.name, dataset_id=dataset_id
@@ -139,7 +142,7 @@ class Orchestrator(OrchestratorPort):
         )
         log.info("Sent Access Request Allowed notification to data steward")
 
-    async def process_access_request_denied(self, *, user_id: str, dataset_id: str):
+    async def _access_request_denied(self, *, user: User, dataset_id: str):
         """Process an Access Request Denied event.
 
         One notification is sent to the data requester telling them that the request
@@ -148,25 +151,10 @@ class Orchestrator(OrchestratorPort):
         Another confirmation notification is sent to the data steward.
 
         Raises:
-            - MissingUserError: When the provided user ID does not exist in the DB.
-            - NotificationInterpolationError: When there is a problem with the values
-            used to perform the notification text interpolation.
+            - NotificationInterpolationError:
+                When there is a problem with the values used to perform the notification
+                text interpolation.
         """
-        extra = {  # for error logging
-            "user_id": user_id,
-            "dataset_id": dataset_id,
-            "notification_name": "Access Request Denied",
-        }
-
-        try:
-            user = await self._user_dao.get_by_id(user_id)
-        except ResourceNotFoundError as err:
-            error = self.MissingUserError(
-                user_id=user_id, notification_name=extra["notification_name"]
-            )
-            log.error(error, extra=extra)
-            raise error from err
-
         # Send a notification to the data requester
         await self._notification_emitter.notify(
             email=user.email,
@@ -179,7 +167,7 @@ class Orchestrator(OrchestratorPort):
 
         # Send a confirmation email to the data steward
         await self._notification_emitter.notify(
-            email=self._config.central_data_steward_email,
+            email=self._config.central_data_stewardship_email,
             full_name=DATA_STEWARD_NAME,
             notification=notifications.ACCESS_REQUEST_DENIED_TO_DS.formatted(
                 full_user_name=user.name, dataset_id=dataset_id
