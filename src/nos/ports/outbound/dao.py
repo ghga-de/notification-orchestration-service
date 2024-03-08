@@ -14,10 +14,13 @@
 # limitations under the License.
 #
 
-"""Used to define the location of the main FastAPI app object."""
+"""DAO interface for accessing the database."""
 
-# flake8: noqa
-# pylint: skip-file
+from hexkit.protocols.dao import DaoSurrogateId, ResourceNotFoundError
 
-# Please adapt to package structure:
-from my_microservice.api.main import app
+from nos.core import models
+
+__all__ = ["UserDaoPort", "ResourceNotFoundError"]
+
+# ports described by type aliases:
+UserDaoPort = DaoSurrogateId[models.User, models.UserData]
