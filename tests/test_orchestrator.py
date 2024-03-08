@@ -20,6 +20,7 @@ from typing import Any
 import pytest
 from ghga_event_schemas.pydantic_ import Notification
 from hexkit.providers.akafka.testutils import ExpectedEvent
+from logot import Logot, logged
 
 from nos.adapters.inbound.event_sub import AccessRequestDetails
 from nos.core import notifications
@@ -38,9 +39,9 @@ def access_request_payload(user_id: str) -> dict[str, Any]:
     "user_notification_content, user_kwargs, ds_notification_content, ds_kwargs, event_type",
     [
         (  # Test access request created
-            notifications.REQUEST_CREATED_TO_USER,
+            notifications.ACCESS_REQUEST_CREATED_TO_USER,
             {"dataset_id": DATASET_ID},
-            notifications.REQUEST_CREATED_TO_DS,
+            notifications.ACCESS_REQUEST_CREATED_TO_DS,
             {
                 "full_user_name": TEST_USER.name,
                 "email": TEST_USER.email,
@@ -49,9 +50,9 @@ def access_request_payload(user_id: str) -> dict[str, Any]:
             "created",
         ),
         (  # Test access request allowed
-            notifications.REQUEST_ALLOWED_TO_USER,
+            notifications.ACCESS_REQUEST_ALLOWED_TO_USER,
             {"dataset_id": DATASET_ID},
-            notifications.REQUEST_ALLOWED_TO_DS,
+            notifications.ACCESS_REQUEST_ALLOWED_TO_DS,
             {
                 "full_user_name": TEST_USER.name,
                 "dataset_id": DATASET_ID,
@@ -59,9 +60,9 @@ def access_request_payload(user_id: str) -> dict[str, Any]:
             "allowed",
         ),
         (  # Test access request denied
-            notifications.REQUEST_DENIED_TO_USER,
+            notifications.ACCESS_REQUEST_DENIED_TO_USER,
             {"dataset_id": DATASET_ID},
-            notifications.REQUEST_DENIED_TO_DS,
+            notifications.ACCESS_REQUEST_DENIED_TO_DS,
             {
                 "full_user_name": TEST_USER.name,
                 "dataset_id": DATASET_ID,
@@ -149,7 +150,7 @@ async def test_access_request(
 
 
 @pytest.mark.asyncio(scope="module")
-async def test_missing_user_id(joint_fixture: JointFixture):
+async def test_missing_user_id(joint_fixture: JointFixture, logot: Logot):
     """Test for error handling in case of invalid user id."""
     payload = access_request_payload("bogus_user_id")
     for event_type in [
@@ -163,5 +164,11 @@ async def test_missing_user_id(joint_fixture: JointFixture):
             topic=joint_fixture.config.access_request_events_topic,
         )
 
-        with pytest.raises(joint_fixture.orchestrator.UserMissingError):
+        with pytest.raises(joint_fixture.orchestrator.MissingUserError):
             await joint_fixture.event_subscriber.run(forever=False)
+        logot.assert_logged(
+            logged.error(
+                "Unable to publish %s notification as user ID %s was not found in"
+                + " the database."
+            )
+        )
