@@ -46,5 +46,4 @@ services:
       - mongo_fs:/data/db
 
 volumes:
-  s3_fs: {}
   mongo_fs: {}
