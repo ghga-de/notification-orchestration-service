@@ -19,12 +19,13 @@
 import logging
 
 from nos.core import notifications
-from nos.core.models import User
 from nos.ports.inbound.orchestrator import OrchestratorPort
 from nos.ports.outbound.dao import ResourceNotFoundError, UserDaoPort
 from nos.ports.outbound.notification_emitter import NotificationEmitterPort
 
 log = logging.getLogger(__name__)
+
+DATA_STEWARD_NAME = "Data Steward"
 
 
 class Orchestrator(OrchestratorPort):
@@ -41,14 +42,6 @@ class Orchestrator(OrchestratorPort):
         self._user_dao = user_dao
         self._notification_emitter = notification_emitter
 
-    async def _retrieve_user_details(self, user_id) -> User:
-        """Retrieve user details"""
-        try:
-            return await self._user_dao.get_by_id(user_id)
-        except ResourceNotFoundError as err:
-            log.error(f"User with id {user_id} not found", extra={"error_message": err})
-            raise
-
     async def process_access_request_created(self, *, user_id: str, dataset_id: str):
         """Processes an Access Request Created event.
 
@@ -56,37 +49,48 @@ class Orchestrator(OrchestratorPort):
         was created.
 
         Another notification is sent to the data steward to inform them of the request.
+
+        Raises:
+            - MissingUserError: When the provided user ID does not exist in the DB.
+            - KeyError: When there is a problem with the values used to perform the
+            notification text interpolation.
         """
+        extra = {  # for error logging
+            "user_id": user_id,
+            "dataset_id": dataset_id,
+            "notification_name": "Access Request Created",
+        }
+
         try:
-            user: User = await self._retrieve_user_details(user_id)
+            user = await self._user_dao.get_by_id(user_id)
         except ResourceNotFoundError as err:
-            error = self.UserMissingError(
-                user_id=user_id, notification_name="Access Request Created"
+            error = self.MissingUserError(
+                user_id=user_id, notification_name=extra["notification_name"]
             )
-            log.error(error, extra={"user_id": user_id, "dataset_id": dataset_id})
+            log.error(error, extra=extra)
             raise error from err
 
         # Send a confirmation email notification to the Data Requester
-        log.info("Sending Access Request Created notification to data requester")
         await self._notification_emitter.notify(
             email=user.email,
             full_name=user.name,
-            subject=notifications.REQUEST_CREATED_TO_USER.subject,
-            text=notifications.REQUEST_CREATED_TO_USER.text.format(
+            subject=notifications.ACCESS_REQUEST_CREATED_TO_USER.subject,
+            text=notifications.ACCESS_REQUEST_CREATED_TO_USER.format_text(
                 dataset_id=dataset_id
             ),
         )
+        log.info("Sent Access Request Created notification to data requester")
 
         # Send a notification to the data steward
-        log.info("Sending Access Request Created notification to data steward")
         await self._notification_emitter.notify(
             email=self._config.central_data_steward_email,
-            full_name="Data Steward",
-            subject=notifications.REQUEST_CREATED_TO_DS.subject,
-            text=notifications.REQUEST_CREATED_TO_DS.text.format(
+            full_name=DATA_STEWARD_NAME,
+            subject=notifications.ACCESS_REQUEST_CREATED_TO_DS.subject,
+            text=notifications.ACCESS_REQUEST_CREATED_TO_DS.format_text(
                 full_user_name=user.name, email=user.email, dataset_id=dataset_id
             ),
         )
+        log.info("Sent Access Request Created notification to data steward")
 
     async def process_access_request_allowed(self, *, user_id: str, dataset_id: str):
         """Process an Access Request Allowed event.
@@ -96,37 +100,48 @@ class Orchestrator(OrchestratorPort):
 
         Another notification is sent to the data steward confirming that the request
         was allowed.
+
+        Raises:
+            - MissingUserError: When the provided user ID does not exist in the DB.
+            - KeyError: When there is a problem with the values used to perform the
+            notification text interpolation.
         """
+        extra = {  # for error logging
+            "user_id": user_id,
+            "dataset_id": dataset_id,
+            "notification_name": "Access Request Allowed",
+        }
+
         try:
-            user: User = await self._retrieve_user_details(user_id)
+            user = await self._user_dao.get_by_id(user_id)
         except ResourceNotFoundError as err:
-            error = self.UserMissingError(
-                user_id=user_id, notification_name="Access Request Allowed"
+            error = self.MissingUserError(
+                user_id=user_id, notification_name=extra["notification_name"]
             )
-            log.error(error, extra={"user_id": user_id, "dataset_id": dataset_id})
+            log.error(error, extra=extra)
             raise error from err
 
         # Send a notification to the data requester
-        log.info("Sending Access Request Allowed notification to data requester")
         await self._notification_emitter.notify(
             email=user.email,
             full_name=user.name,
-            subject=notifications.REQUEST_ALLOWED_TO_USER.subject,
-            text=notifications.REQUEST_ALLOWED_TO_USER.text.format(
+            subject=notifications.ACCESS_REQUEST_ALLOWED_TO_USER.subject,
+            text=notifications.ACCESS_REQUEST_ALLOWED_TO_USER.format_text(
                 dataset_id=dataset_id
             ),
         )
+        log.info("Sent Access Request Allowed notification to data requester")
 
         # Send a confirmation email to the data steward
-        log.info("Sending Access Request Allowed notification to data steward")
         await self._notification_emitter.notify(
             email=self._config.central_data_steward_email,
-            full_name="Data Steward",
-            subject=notifications.REQUEST_ALLOWED_TO_DS.subject,
-            text=notifications.REQUEST_ALLOWED_TO_DS.text.format(
+            full_name=DATA_STEWARD_NAME,
+            subject=notifications.ACCESS_REQUEST_ALLOWED_TO_DS.subject,
+            text=notifications.ACCESS_REQUEST_ALLOWED_TO_DS.format_text(
                 full_user_name=user.name, dataset_id=dataset_id
             ),
         )
+        log.info("Sent Access Request Allowed notification to data steward")
 
     async def process_access_request_denied(self, *, user_id: str, dataset_id: str):
         """Process an Access Request Denied event.
@@ -135,34 +150,45 @@ class Orchestrator(OrchestratorPort):
         was denied.
 
         Another confirmation notification is sent to the data steward.
+
+        Raises:
+            - MissingUserError: When the provided user ID does not exist in the DB.
+            - KeyError: When there is a problem with the values used to perform the
+            notification text interpolation.
         """
+        extra = {  # for error logging
+            "user_id": user_id,
+            "dataset_id": dataset_id,
+            "notification_name": "Access Request Denied",
+        }
+
         try:
-            user: User = await self._retrieve_user_details(user_id)
+            user = await self._user_dao.get_by_id(user_id)
         except ResourceNotFoundError as err:
-            error = self.UserMissingError(
-                user_id=user_id, notification_name="Access Request Denied"
+            error = self.MissingUserError(
+                user_id=user_id, notification_name=extra["notification_name"]
             )
-            log.error(error, extra={"user_id": user_id, "dataset_id": dataset_id})
+            log.error(error, extra=extra)
             raise error from err
 
         # Send a notification to the data requester
-        log.info("Sending Access Request Denied notification to data requester")
         await self._notification_emitter.notify(
             email=user.email,
             full_name=user.name,
-            subject=notifications.REQUEST_DENIED_TO_USER.subject,
-            text=notifications.REQUEST_DENIED_TO_USER.text.format(
+            subject=notifications.ACCESS_REQUEST_DENIED_TO_USER.subject,
+            text=notifications.ACCESS_REQUEST_DENIED_TO_USER.format_text(
                 dataset_id=dataset_id
             ),
         )
+        log.info("Sent Access Request Denied notification to data requester")
 
         # Send a confirmation email to the data steward
-        log.info("Sending Access Request Denied notification to data steward")
         await self._notification_emitter.notify(
             email=self._config.central_data_steward_email,
-            full_name="Data Steward",
-            subject=notifications.REQUEST_DENIED_TO_DS.subject,
-            text=notifications.REQUEST_DENIED_TO_DS.text.format(
+            full_name=DATA_STEWARD_NAME,
+            subject=notifications.ACCESS_REQUEST_DENIED_TO_DS.subject,
+            text=notifications.ACCESS_REQUEST_DENIED_TO_DS.format_text(
                 full_user_name=user.name, dataset_id=dataset_id
             ),
         )
+        log.info("Sent Access Request Denied notification to data steward")

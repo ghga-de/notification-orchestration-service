@@ -22,7 +22,7 @@ from abc import ABC, abstractmethod
 class OrchestratorPort(ABC):
     """A class that creates notification events from incoming event data."""
 
-    class UserMissingError(RuntimeError):
+    class MissingUserError(RuntimeError):
         """Raised when a user is not found in the database.
 
         The notification title is included to aid in debugging.
@@ -43,6 +43,11 @@ class OrchestratorPort(ABC):
         was created.
 
         Another notification is sent to the data steward to inform them of the request.
+
+        Raises:
+            - MissingUserError: When the provided user ID does not exist in the DB.
+            - KeyError: When there is a problem with the values used to perform the
+            notification text interpolation.
         """
 
     @abstractmethod
@@ -54,6 +59,11 @@ class OrchestratorPort(ABC):
 
         Another notification is sent to the data steward confirming that the request
         was allowed.
+
+        Raises:
+            - MissingUserError: When the provided user ID does not exist in the DB.
+            - KeyError: When there is a problem with the values used to perform the
+            notification text interpolation.
         """
 
     @abstractmethod
@@ -64,4 +74,9 @@ class OrchestratorPort(ABC):
         was denied.
 
         Another confirmation notification is sent to the data steward.
+
+        Raises:
+            - MissingUserError: When the provided user ID does not exist in the DB.
+            - KeyError: When there is a problem with the values used to perform the
+            notification text interpolation.
         """
