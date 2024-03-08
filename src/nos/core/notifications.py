@@ -15,16 +15,19 @@
 #
 """The content of all notification and confirmation emails."""
 
+import logging
 from typing import NamedTuple
+
+log = logging.getLogger(__name__)
 
 __all__ = [
     "Notification",
-    "REQUEST_CREATED_TO_USER",
-    "REQUEST_CREATED_TO_DS",
-    "REQUEST_ALLOWED_TO_USER",
-    "REQUEST_ALLOWED_TO_DS",
-    "REQUEST_DENIED_TO_USER",
-    "REQUEST_DENIED_TO_DS",
+    "ACCESS_REQUEST_CREATED_TO_USER",
+    "ACCESS_REQUEST_CREATED_TO_DS",
+    "ACCESS_REQUEST_ALLOWED_TO_USER",
+    "ACCESS_REQUEST_ALLOWED_TO_DS",
+    "ACCESS_REQUEST_DENIED_TO_USER",
+    "ACCESS_REQUEST_DENIED_TO_DS",
 ]
 
 
@@ -34,12 +37,23 @@ class Notification(NamedTuple):
     subject: str
     text: str
 
+    def format_text(self, **kwargs):
+        """Perform string interpolation on the `text` attribute.
 
-# The subject and text for the various notification emails.
-# The attributes of the request can be interpolated.
+        Raises a KeyError if the required template keys are not provided.
+        """
+        try:
+            return self.text.format(**kwargs)
+        except KeyError:
+            log.error(
+                "Unable to format notification text with kwargs %s",
+                kwargs,
+                extra={"text": self.text},
+            )
+            raise
 
 
-REQUEST_CREATED_TO_USER = Notification(
+ACCESS_REQUEST_CREATED_TO_USER = Notification(
     "Your data download access request has been registered",
     """
 Your request to download the dataset {dataset_id} has been registered.
@@ -48,7 +62,7 @@ You should be contacted by one of our data stewards in the next three workdays.
 """,
 )
 
-REQUEST_CREATED_TO_DS = Notification(
+ACCESS_REQUEST_CREATED_TO_DS = Notification(
     "A data download access request has been created",
     """
 {full_user_name} requested to download the dataset {dataset_id}.
@@ -57,7 +71,7 @@ The specified contact email address is: {email}
 """,
 )
 
-REQUEST_ALLOWED_TO_USER = Notification(
+ACCESS_REQUEST_ALLOWED_TO_USER = Notification(
     "Your data download access request has been accepted",
     """
 We are glad to inform you that your request to download the dataset
@@ -67,7 +81,7 @@ You can now start download the dataset as explained in the GHGA Data Portal.
 """,
 )
 
-REQUEST_ALLOWED_TO_DS = Notification(
+ACCESS_REQUEST_ALLOWED_TO_DS = Notification(
     "Data download access has been allowed",
     """
 The request by {full_user_name} to download the dataset
@@ -76,7 +90,7 @@ and the access has been granted.
 """,
 )
 
-REQUEST_DENIED_TO_USER = Notification(
+ACCESS_REQUEST_DENIED_TO_USER = Notification(
     "Your data download access request has been rejected",
     """
 Unfortunately, your request to download the dataset
@@ -86,7 +100,7 @@ Please contact our help desk for information about this decision.
 """,
 )
 
-REQUEST_DENIED_TO_DS = Notification(
+ACCESS_REQUEST_DENIED_TO_DS = Notification(
     "Data download access has been rejected",
     """
 The request by {full_user_name} to download the dataset
