@@ -21,8 +21,8 @@ from hexkit.providers.akafka import KafkaConfig
 from hexkit.providers.mongodb import MongoDbConfig
 from pydantic import Field
 
-from nos.adapters.inbound.event_sub import EventSubTranslatorConfig
-from nos.adapters.outbound.event_pub import NotificationEmitterConfig
+from nos.translators.inbound.event_sub import EventSubTranslatorConfig
+from nos.translators.outbound.event_pub import NotificationEmitterConfig
 
 SERVICE_NAME: str = "nos"
 

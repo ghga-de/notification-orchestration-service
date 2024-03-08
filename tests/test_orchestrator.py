@@ -22,8 +22,8 @@ from ghga_event_schemas.pydantic_ import Notification
 from hexkit.providers.akafka.testutils import ExpectedEvent
 from logot import Logot, logged
 
-from nos.adapters.inbound.event_sub import AccessRequestDetails
 from nos.core import notifications
+from nos.translators.inbound.event_sub import AccessRequestDetails
 from tests.conftest import TEST_USER
 from tests.fixtures.joint import JointFixture
 

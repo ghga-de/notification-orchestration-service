@@ -26,12 +26,12 @@ from hexkit.providers.akafka import KafkaEventSubscriber
 from hexkit.providers.akafka.testutils import KafkaFixture
 from hexkit.providers.mongodb.testutils import MongoDbFixture
 
-from nos.adapters.outbound.dao import user_dao_factory
 from nos.config import Config
 from nos.core.models import User
 from nos.inject import prepare_core, prepare_event_subscriber
 from nos.ports.inbound.orchestrator import OrchestratorPort
 from nos.ports.outbound.dao import UserDaoPort
+from nos.translators.outbound.dao import user_dao_factory
 from tests.fixtures.config import get_config
 
 

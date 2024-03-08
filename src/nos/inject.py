@@ -23,12 +23,12 @@ from ghga_service_commons.utils.context import asyncnullcontext
 from hexkit.providers.akafka import KafkaEventPublisher, KafkaEventSubscriber
 from hexkit.providers.mongodb import MongoDbDaoFactory
 
-from nos.adapters.inbound.event_sub import EventSubTranslator
-from nos.adapters.outbound.dao import user_dao_factory
-from nos.adapters.outbound.event_pub import NotificationEmitter
 from nos.config import Config
 from nos.core.orchestrator import Orchestrator
 from nos.ports.inbound.orchestrator import OrchestratorPort
+from nos.translators.inbound.event_sub import EventSubTranslator
+from nos.translators.outbound.dao import user_dao_factory
+from nos.translators.outbound.event_pub import NotificationEmitter
 
 
 @asynccontextmanager
