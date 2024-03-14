@@ -15,31 +15,14 @@
 #
 """Event subscriber definition."""
 
+from ghga_event_schemas.pydantic_ import AccessRequestDetails
 from ghga_event_schemas.validation import get_validated_payload
 from hexkit.custom_types import Ascii, JsonObject
 from hexkit.protocols.eventsub import EventSubscriberProtocol
-from pydantic import BaseModel, Field
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
 from nos.ports.inbound.orchestrator import OrchestratorPort
-
-
-class AccessRequestDetails(BaseModel):
-    """A model representing the relationship between a user and a dataset.
-
-    This should be moved to ghga_event_schemas if used.
-    """
-
-    user_id: str = Field(
-        default=...,
-        description="The internal ID of the user",
-        examples=["123e4567-e89b-12d3-a456-426614174000"],
-    )
-    dataset_id: str = Field(
-        default=...,
-        description="The ID of the dataset",
-        examples=["123e4567-e89b-12d3-a456-426614174000"],
-    )
 
 
 class EventSubTranslatorConfig(BaseSettings):
