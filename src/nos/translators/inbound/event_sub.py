@@ -15,7 +15,7 @@
 #
 """Event subscriber definition."""
 
-from ghga_event_schemas.pydantic_ import AccessRequestDetails
+from ghga_event_schemas import pydantic_ as event_schemas
 from ghga_event_schemas.validation import get_validated_payload
 from hexkit.custom_types import Ascii, JsonObject
 from hexkit.protocols.eventsub import EventSubscriberProtocol
@@ -48,6 +48,16 @@ class EventSubTranslatorConfig(BaseSettings):
         description="The type to use for access request denied events",
         examples=["access_request_denied"],
     )
+    file_registered_event_topic: str = Field(
+        default=...,
+        description="The name of the topic containing internal file registration events.",
+        examples=["internal_file_registry"],
+    )
+    file_registered_event_type: str = Field(
+        default=...,
+        description="The type used for events detailing internally file registrations.",
+        examples=["file_registered"],
+    )
 
 
 class EventSubTranslator(EventSubscriberProtocol):
@@ -58,18 +68,22 @@ class EventSubTranslator(EventSubscriberProtocol):
     ):
         self.topics_of_interest = [
             config.access_request_events_topic,
+            config.file_registered_event_topic,
         ]
         self.types_of_interest = [
             config.access_request_created_type,
             config.access_request_allowed_type,
             config.access_request_denied_type,
+            config.file_registered_event_type,
         ]
         self._config = config
         self._orchestrator = orchestrator
 
     async def _handle_access_request(self, type_: str, payload: JsonObject) -> None:
         """Send notifications for an access request-related event."""
-        validated_payload = get_validated_payload(payload, AccessRequestDetails)
+        validated_payload = get_validated_payload(
+            payload, event_schemas.AccessRequestDetails
+        )
         await self._orchestrator.process_access_request_notification(
             event_type=type_,
             user_id=validated_payload.user_id,

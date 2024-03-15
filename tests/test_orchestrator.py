@@ -18,7 +18,7 @@
 from typing import Any
 
 import pytest
-from ghga_event_schemas.pydantic_ import AccessRequestDetails, Notification
+from ghga_event_schemas import pydantic_ as event_schemas
 from hexkit.providers.akafka.testutils import ExpectedEvent
 from logot import Logot, logged
 
@@ -31,7 +31,9 @@ DATASET_ID = "dataset1"
 
 def access_request_payload(user_id: str) -> dict[str, Any]:
     """Succinctly create the payload for an access request event."""
-    return AccessRequestDetails(user_id=user_id, dataset_id=DATASET_ID).model_dump()
+    return event_schemas.AccessRequestDetails(
+        user_id=user_id, dataset_id=DATASET_ID
+    ).model_dump()
 
 
 @pytest.mark.parametrize(
@@ -95,14 +97,14 @@ async def test_access_request(
 
     assert event_type_to_use
 
-    user_notification = Notification(
+    user_notification = event_schemas.Notification(
         recipient_email=joint_fixture.test_user.email,
         subject=user_notification_content.subject,
         recipient_name=joint_fixture.test_user.name,
         plaintext_body=user_notification_content.text.format(**user_kwargs),
     )
 
-    data_steward_notification = Notification(
+    data_steward_notification = event_schemas.Notification(
         recipient_email=joint_fixture.config.central_data_stewardship_email,
         subject=ds_notification_content.subject,
         recipient_name="Data Steward",
@@ -113,10 +115,12 @@ async def test_access_request(
         ExpectedEvent(
             payload=user_notification.model_dump(),
             type_=joint_fixture.config.notification_event_type,
+            key=joint_fixture.test_user.email,
         ),
         ExpectedEvent(
             payload=data_steward_notification.model_dump(),
             type_=joint_fixture.config.notification_event_type,
+            key=joint_fixture.config.central_data_stewardship_email,
         ),
     ]
 
