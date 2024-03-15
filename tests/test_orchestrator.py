@@ -19,6 +19,7 @@ from typing import Any
 
 import pytest
 from ghga_event_schemas import pydantic_ as event_schemas
+from ghga_service_commons.utils.utc_dates import now_as_utc
 from hexkit.providers.akafka.testutils import ExpectedEvent
 from logot import Logot, logged
 
@@ -183,7 +184,7 @@ async def test_file_registered(joint_fixture: JointFixture):
     # Prepare triggering event (the file registration event).
     # The only thing we care about is the file_id, so the rest can be blank.
     trigger_event = event_schemas.FileInternallyRegistered(
-        upload_date="",
+        upload_date=now_as_utc().isoformat(),
         file_id=DATASET_ID,
         object_id="",
         bucket_id="",
