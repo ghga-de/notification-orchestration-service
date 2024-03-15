@@ -175,3 +175,52 @@ async def test_missing_user_id(joint_fixture: JointFixture, logot: Logot):
                 + " the database."
             )
         )
+
+
+@pytest.mark.asyncio(scope="module")
+async def test_file_registered(joint_fixture: JointFixture):
+    """Test that the file registered events are translated into a notification."""
+    # Prepare triggering event (the file registration event).
+    # The only thing we care about is the file_id, so the rest can be blank.
+    trigger_event = event_schemas.FileInternallyRegistered(
+        upload_date="",
+        file_id=DATASET_ID,
+        object_id="",
+        bucket_id="",
+        s3_endpoint_alias="",
+        decrypted_size=0,
+        decryption_secret_id="",
+        content_offset=0,
+        encrypted_part_size=0,
+        encrypted_parts_md5=[""],
+        encrypted_parts_sha256=[""],
+        decrypted_sha256="",
+    )
+
+    # Publish the trigger event
+    await joint_fixture.kafka.publish_event(
+        payload=trigger_event.model_dump(),
+        type_=joint_fixture.config.file_registered_event_type,
+        topic=joint_fixture.config.file_registered_event_topic,
+    )
+
+    # Define the event that should be published by the NOS when the trigger is consumed
+    expected_notification = event_schemas.Notification(
+        recipient_email=joint_fixture.config.central_data_stewardship_email,
+        recipient_name="Data Steward",
+        subject="File upload completed",
+        plaintext_body=f"The file {DATASET_ID} has been successfully uploaded.",
+    )
+
+    expected_event = ExpectedEvent(
+        payload=expected_notification.model_dump(),
+        type_=joint_fixture.config.notification_event_type,
+        key=joint_fixture.config.central_data_stewardship_email,
+    )
+
+    # consume the event and verify that the expected event is published
+    async with joint_fixture.kafka.expect_events(
+        events=[expected_event],
+        in_topic=joint_fixture.config.notification_event_topic,
+    ):
+        await joint_fixture.event_subscriber.run(forever=False)

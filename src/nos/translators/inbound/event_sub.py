@@ -90,6 +90,15 @@ class EventSubTranslator(EventSubscriberProtocol):
             dataset_id=validated_payload.dataset_id,
         )
 
+    async def _handle_file_registered(self, payload: JsonObject) -> None:
+        """Send notifications for internal file registrations (completed uploads)."""
+        validated_payload = get_validated_payload(
+            payload, event_schemas.FileInternallyRegistered
+        )
+        await self._orchestrator.process_file_registered_notification(
+            file_id=validated_payload.file_id
+        )
+
     async def _consume_validated(
         self, *, payload: JsonObject, type_: Ascii, topic: Ascii
     ) -> None:
@@ -100,3 +109,5 @@ class EventSubTranslator(EventSubscriberProtocol):
             self._config.access_request_denied_type,
         ):
             await self._handle_access_request(type_, payload)
+        elif type_ == self._config.file_registered_event_type:
+            await self._handle_file_registered(payload=payload)

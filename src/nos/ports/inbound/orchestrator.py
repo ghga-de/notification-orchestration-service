@@ -45,3 +45,7 @@ class OrchestratorPort(ABC):
             - MissingUserError:
                 When the provided user ID does not exist in the DB.
         """
+
+    @abstractmethod
+    async def process_file_registered_notification(self, *, file_id: str):
+        """Handle notifications for file deletion requests."""
