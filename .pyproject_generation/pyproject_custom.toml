@@ -13,5 +13,4 @@ dependencies = [
 Repository = "https://github.com/ghga-de/notification-orchestration-service"
 
 [project.scripts]
-# please adapt to package name
 nos = "nos.__main__:run"
