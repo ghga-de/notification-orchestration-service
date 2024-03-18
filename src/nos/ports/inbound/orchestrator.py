@@ -48,4 +48,4 @@ class OrchestratorPort(ABC):
 
     @abstractmethod
     async def process_file_registered_notification(self, *, file_id: str):
-        """Handle notifications for file deletion requests."""
+        """Send notifications for internal file registrations (completed uploads)."""

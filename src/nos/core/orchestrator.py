@@ -176,7 +176,7 @@ class Orchestrator(OrchestratorPort):
         log.info("Sent Access Request Denied notification to data steward")
 
     async def process_file_registered_notification(self, *, file_id: str):
-        """Handle notifications for file deletion requests."""
+        """Send notifications for internal file registrations (completed uploads)."""
         # Send an email to the data steward
         await self._notification_emitter.notify(
             email=self._config.central_data_stewardship_email,
