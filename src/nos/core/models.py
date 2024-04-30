@@ -17,7 +17,6 @@
 """Contains models relevant to the core domain"""
 
 from enum import Enum
-from typing import Optional
 
 from pydantic import BaseModel, EmailStr, Field
 
@@ -43,7 +42,7 @@ class UserData(BaseDto):
         description="Full name of the user",
         examples=["Rosalind Franklin"],
     )
-    title: Optional[AcademicTitle] = Field(
+    title: AcademicTitle | None = Field(
         default=None, title="Academic title", description="Academic title of the user"
     )
     email: EmailStr = Field(
