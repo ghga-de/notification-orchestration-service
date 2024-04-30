@@ -100,7 +100,7 @@ class EventSubTranslator(EventSubscriberProtocol):
         )
 
     async def _consume_validated(
-        self, *, payload: JsonObject, type_: Ascii, topic: Ascii
+        self, *, payload: JsonObject, type_: Ascii, topic: Ascii, key: Ascii
     ) -> None:
         """Consumes an event"""
         if type_ in (
