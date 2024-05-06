@@ -18,6 +18,8 @@
 
 import logging
 
+from ghga_event_schemas import pydantic_ as event_schemas
+
 from nos.config import Config
 from nos.core import notifications
 from nos.core.models import User
@@ -184,3 +186,11 @@ class Orchestrator(OrchestratorPort):
             notification=notifications.FILE_REGISTERED_TO_DS.formatted(file_id=file_id),
         )
         log.info("Sent File Upload Completed notification to data steward")
+
+    async def process_all_ivas_reset(self, *, user_id: str):
+        """Send a notification to the user when all their IVAs are reset."""
+        pass
+
+    async def process_iva_state_change(self, *, user_iva: event_schemas.UserIvaState):
+        """Handle notifications for IVA state changes."""
+        pass
