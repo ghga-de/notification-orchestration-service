@@ -86,22 +86,23 @@ async def test_access_request(
 
     Test will also check idempotence.
     """
-    assert joint_fixture.test_user is not None
+    test_user = await joint_fixture.user_dao.get_by_id(TEST_USER.id)
 
     event_type_to_use = ""
-    if event_type == "created":
-        event_type_to_use = joint_fixture.config.access_request_created_event_type
-    elif event_type == "allowed":
-        event_type_to_use = joint_fixture.config.access_request_allowed_event_type
-    elif event_type == "denied":
-        event_type_to_use = joint_fixture.config.access_request_denied_event_type
+    match event_type:
+        case "created":
+            event_type_to_use = joint_fixture.config.access_request_created_event_type
+        case "allowed":
+            event_type_to_use = joint_fixture.config.access_request_allowed_event_type
+        case "denied":
+            event_type_to_use = joint_fixture.config.access_request_denied_event_type
 
     assert event_type_to_use
 
     user_notification = event_schemas.Notification(
-        recipient_email=joint_fixture.test_user.email,
+        recipient_email=test_user.email,
         subject=user_notification_content.subject,
-        recipient_name=joint_fixture.test_user.name,
+        recipient_name=test_user.name,
         plaintext_body=user_notification_content.text.format(**user_kwargs),
     )
 
@@ -116,7 +117,7 @@ async def test_access_request(
         ExpectedEvent(
             payload=user_notification.model_dump(),
             type_=joint_fixture.config.notification_event_type,
-            key=joint_fixture.test_user.email,
+            key=test_user.email,
         ),
         ExpectedEvent(
             payload=data_steward_notification.model_dump(),
@@ -127,7 +128,7 @@ async def test_access_request(
 
     # Create the kafka event that would be published by the access request service
     await joint_fixture.kafka.publish_event(
-        payload=access_request_payload(joint_fixture.test_user.id),
+        payload=access_request_payload(test_user.id),
         type_=event_type_to_use,
         topic=joint_fixture.config.access_request_events_topic,
     )
@@ -141,7 +142,7 @@ async def test_access_request(
 
     # Publish and consume event again to check idempotence
     await joint_fixture.kafka.publish_event(
-        payload=access_request_payload(joint_fixture.test_user.id),
+        payload=access_request_payload(test_user.id),
         type_=event_type_to_use,
         topic=joint_fixture.config.access_request_events_topic,
     )
@@ -222,6 +223,106 @@ async def test_file_registered(joint_fixture: JointFixture):
     # consume the event and verify that the expected event is published
     async with joint_fixture.kafka.expect_events(
         events=[expected_event],
+        in_topic=joint_fixture.config.notification_event_topic,
+    ):
+        await joint_fixture.event_subscriber.run(forever=False)
+
+
+@pytest.mark.parametrize(
+    "iva_state,expected_user_notification,expected_ds_notification",
+    [
+        (
+            event_schemas.IvaState.CODE_REQUESTED,
+            notifications.IVA_CODE_REQUESTED_TO_USER,
+            notifications.IVA_CODE_REQUESTED_TO_DS,
+        ),
+        (
+            event_schemas.IvaState.CODE_TRANSMITTED,
+            notifications.IVA_CODE_TRANSMITTED_TO_USER,
+            None,
+        ),
+        (
+            event_schemas.IvaState.VERIFIED,
+            None,
+            notifications.IVA_CODE_SUBMITTED_TO_DS,
+        ),
+        (
+            event_schemas.IvaState.UNVERIFIED,
+            None,
+            notifications.IVA_UNVERIFIED_TO_DS,
+        ),
+    ],
+)
+@pytest.mark.asyncio(scope="module")
+async def test_iva_state_change(
+    joint_fixture: JointFixture,
+    iva_state: event_schemas.IvaState,
+    expected_user_notification: notifications.Notification | None,
+    expected_ds_notification: notifications.Notification | None,
+):
+    """Test that the IVA state change events are translated into the proper notification.
+
+    This does not check the wording or content of the notifications, only that the
+    correct notifications are generated for each state change.
+    """
+    # Prepare triggering event (the IVA state change event).
+    trigger_event = event_schemas.UserIvaState(
+        user_id=TEST_USER.id,
+        state=iva_state,
+        value=None,
+        type=event_schemas.IvaType.FAX,
+    )
+
+    # Publish the trigger event
+    await joint_fixture.kafka.publish_event(
+        payload=trigger_event.model_dump(),
+        type_=joint_fixture.config.iva_state_changed_event_type,
+        topic=joint_fixture.config.iva_events_topic,
+        key=TEST_USER.id,
+    )
+
+    # Build a the notification payload for the user, if applicable
+    user_notification = (
+        event_schemas.Notification(
+            recipient_email=TEST_USER.email,
+            subject=expected_user_notification.subject,
+            recipient_name=TEST_USER.name,
+            plaintext_body=expected_user_notification.text,
+        )
+        if expected_user_notification
+        else None
+    )
+
+    # Build a the notification payload for the data steward, if applicable
+    data_steward_notification = (
+        event_schemas.Notification(
+            recipient_email=joint_fixture.config.central_data_stewardship_email,
+            subject=expected_ds_notification.subject,
+            recipient_name="Data Steward",
+            plaintext_body=expected_ds_notification.text.format(
+                full_user_name=TEST_USER.name,
+                email=TEST_USER.email,
+                type=trigger_event.type,
+            ),
+        )
+        if expected_ds_notification
+        else None
+    )
+
+    # Combine the two notifications into a list of expected events
+    expected_events = []
+    for notification in [user_notification, data_steward_notification]:
+        if notification:
+            expected_events.append(
+                ExpectedEvent(
+                    payload=notification.model_dump(),
+                    type_=joint_fixture.config.notification_event_type,
+                )
+            )
+
+    # Consume the event and verify that the expected events are published
+    async with joint_fixture.kafka.expect_events(
+        events=expected_events,
         in_topic=joint_fixture.config.notification_event_topic,
     ):
         await joint_fixture.event_subscriber.run(forever=False)

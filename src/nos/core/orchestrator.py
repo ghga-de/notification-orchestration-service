@@ -17,6 +17,8 @@
 """Contains the implementation of the Orchestrator class"""
 
 import logging
+from collections.abc import Callable
+from functools import partial
 
 from ghga_event_schemas import pydantic_ as event_schemas
 
@@ -55,7 +57,7 @@ class Orchestrator(OrchestratorPort):
             - MissingUserError:
                 When the provided user ID does not exist in the DB.
         """
-        method_map = {
+        method_map: dict[str, Callable] = {
             self._config.access_request_created_event_type: self._access_request_created,
             self._config.access_request_allowed_event_type: self._access_request_allowed,
             self._config.access_request_denied_event_type: self._access_request_denied,
@@ -187,10 +189,124 @@ class Orchestrator(OrchestratorPort):
         )
         log.info("Sent File Upload Completed notification to data steward")
 
+    async def _iva_code_requested(self, *, user: User):
+        """Send notifications relaying that an IVA code has been requested.
+
+        One notification is sent to the user to confirm that their request was received.
+
+        Another notification is sent to the data steward to inform them of the request.
+        """
+        # Send a notification to the user
+        await self._notification_emitter.notify(
+            email=user.email,
+            full_name=user.name,
+            notification=notifications.IVA_CODE_REQUESTED_TO_USER,
+        )
+
+        # Send a notification to the data steward
+        await self._notification_emitter.notify(
+            email=self._config.central_data_stewardship_email,
+            full_name=DATA_STEWARD_NAME,
+            notification=notifications.IVA_CODE_REQUESTED_TO_DS.formatted(
+                full_user_name=user.name, email=user.email
+            ),
+        )
+
+    async def _iva_code_transmitted(self, *, user: User):
+        """Send a notification that an IVA code has been transmitted to the user."""
+        await self._notification_emitter.notify(
+            email=user.email,
+            full_name=user.name,
+            notification=notifications.IVA_CODE_TRANSMITTED_TO_USER,
+        )
+
+    async def _iva_code_submitted(self, *, user: User):
+        """Send a notification to the data steward that an IVA code has been submitted."""
+        await self._notification_emitter.notify(
+            email=self._config.central_data_stewardship_email,
+            full_name=DATA_STEWARD_NAME,
+            notification=notifications.IVA_CODE_SUBMITTED_TO_DS.formatted(
+                full_user_name=user.name, email=user.email
+            ),
+        )
+
+    async def _iva_unverified(
+        self,
+        *,
+        iva_type: str,
+        user: User,
+    ):
+        """Send notifications for IVAs set to 'unverified'.
+
+        This happens when the user exceeds the allotted time to submit their IVA code.
+        """
+        await self._notification_emitter.notify(
+            email=self._config.central_data_stewardship_email,
+            full_name=DATA_STEWARD_NAME,
+            notification=notifications.IVA_UNVERIFIED_TO_DS.formatted(
+                full_user_name=user.name, email=user.email, type=iva_type
+            ),
+        )
+
     async def process_all_ivas_reset(self, *, user_id: str):
         """Send a notification to the user when all their IVAs are reset."""
-        pass
+        try:
+            user = await self._user_dao.get_by_id(user_id)
+        except ResourceNotFoundError as err:
+            error = self.MissingUserError(
+                user_id=user_id, notification_name="All IVAs Invalidated"
+            )
+            log.error(
+                error,
+                extra={"user_id": user_id, "notification_name": "All IVAs Invalidated"},
+            )
+            raise error from err
+
+        await self._notification_emitter.notify(
+            email=user.email,
+            full_name=user.name,
+            notification=notifications.ALL_IVAS_INVALIDATED_TO_USER,
+        )
 
     async def process_iva_state_change(self, *, user_iva: event_schemas.UserIvaState):
         """Handle notifications for IVA state changes."""
-        pass
+        method_map: dict[event_schemas.IvaState, Callable] = {
+            event_schemas.IvaState.CODE_REQUESTED: self._iva_code_requested,
+            event_schemas.IvaState.CODE_TRANSMITTED: self._iva_code_transmitted,
+            event_schemas.IvaState.VERIFIED: self._iva_code_submitted,
+            event_schemas.IvaState.UNVERIFIED: partial(
+                self._iva_unverified,
+                iva_type=str(user_iva.type) if user_iva.type else "N/A",
+            ),
+        }
+
+        notification_name = ""  # used for logging
+
+        match user_iva.state:
+            case event_schemas.IvaState.CODE_REQUESTED:
+                notification_name = "IVA Code Requested"
+
+            case event_schemas.IvaState.CODE_TRANSMITTED:
+                notification_name = "IVA Code Transmitted"
+
+            case event_schemas.IvaState.VERIFIED:
+                notification_name = "IVA Code Verified"
+
+            case event_schemas.IvaState.UNVERIFIED:
+                notification_name = "IVA Unverified"
+
+        extra = {
+            "user_id": user_iva.user_id,
+            "notification_name": notification_name,
+        }
+
+        try:
+            user = await self._user_dao.get_by_id(user_iva.user_id)
+        except ResourceNotFoundError as err:
+            error = self.MissingUserError(
+                user_id=user_iva.user_id, notification_name=extra["notification_name"]
+            )
+            log.error(error, extra=extra)
+            raise error from err
+
+        await method_map[user_iva.state](user=user)
