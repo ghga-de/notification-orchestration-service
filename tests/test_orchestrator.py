@@ -37,6 +37,16 @@ def access_request_payload(user_id: str) -> dict[str, Any]:
     ).model_dump()
 
 
+def iva_state_payload(user_id: str, state: event_schemas.IvaState) -> dict[str, Any]:
+    """Succinctly create the payload for an IVA state change event."""
+    return event_schemas.UserIvaState(
+        user_id=user_id,
+        state=state,
+        value=None,
+        type=None,
+    ).model_dump()
+
+
 @pytest.mark.parametrize(
     "user_notification_content, user_kwargs, ds_notification_content, ds_kwargs, event_type",
     [
@@ -155,14 +165,58 @@ async def test_access_request(
 
 
 @pytest.mark.asyncio(scope="module")
-async def test_missing_user_id(joint_fixture: JointFixture, logot: Logot):
-    """Test for error handling in case of invalid user id."""
+async def test_missing_user_id_access_requests(
+    joint_fixture: JointFixture, logot: Logot
+):
+    """Test for error handling in case of invalid user id, specifically for the access
+    request events.
+    """
     payload = access_request_payload("bogus_user_id")
-    for event_type in [
+
+    event_types = (
         joint_fixture.config.access_request_created_event_type,
         joint_fixture.config.access_request_allowed_event_type,
         joint_fixture.config.access_request_denied_event_type,
-    ]:
+    )
+
+    for event_type in event_types:
+        await joint_fixture.kafka.publish_event(
+            payload=payload,
+            type_=event_type,
+            topic=joint_fixture.config.access_request_events_topic,
+        )
+
+        with pytest.raises(joint_fixture.orchestrator.MissingUserError):
+            await joint_fixture.event_subscriber.run(forever=False)
+        logot.assert_logged(
+            logged.error(
+                "Unable to publish %s notification as user ID %s was not found in"
+                + " the database."
+            )
+        )
+
+
+@pytest.mark.asyncio(scope="module")
+async def test_missing_user_id_iva_state_changes(
+    joint_fixture: JointFixture, logot: Logot
+):
+    """Test for error handling in case of invalid user id, specifically for the IVA
+    state change events.
+    """
+    payloads = (
+        iva_state_payload("bogus_user_id", event_schemas.IvaState.CODE_REQUESTED),
+        iva_state_payload("bogus_user_id", event_schemas.IvaState.CODE_TRANSMITTED),
+        iva_state_payload("bogus_user_id", event_schemas.IvaState.VERIFIED),
+        iva_state_payload("bogus_user_id", event_schemas.IvaState.UNVERIFIED),
+    )
+
+    event_types = (
+        joint_fixture.config.iva_state_changed_event_type,  # requested
+        joint_fixture.config.iva_state_changed_event_type,  # transmitted
+        joint_fixture.config.iva_state_changed_event_type,  # verified
+        joint_fixture.config.iva_state_changed_event_type,  # unverified
+    )
+    for payload, event_type in zip(payloads, event_types, strict=True):
         await joint_fixture.kafka.publish_event(
             payload=payload,
             type_=event_type,

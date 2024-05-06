@@ -37,6 +37,13 @@ class OrchestratorPort(ABC):
             )
             super().__init__(message)
 
+    class UnexpectedIvaState(RuntimeError):
+        """Raised when an unexpected IVA state is encountered."""
+
+        def __init__(self, *, state: str) -> None:
+            message = f"Unexpected IVA state '{state}' encountered."
+            super().__init__(message)
+
     @abstractmethod
     async def process_access_request_notification(
         self, *, event_type: str, user_id: str, dataset_id: str

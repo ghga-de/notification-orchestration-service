@@ -282,20 +282,27 @@ class Orchestrator(OrchestratorPort):
             ),
         }
 
-        notification_name = ""  # used for logging
+        notification_name = (
+            "IVA Code Requested"
+            if user_iva.state == event_schemas.IvaState.CODE_REQUESTED
+            else "IVA Code Transmitted"
+            if user_iva.state == event_schemas.IvaState.CODE_TRANSMITTED
+            else "IVA Code Verified"
+            if user_iva.state == event_schemas.IvaState.VERIFIED
+            else "IVA Unverified"
+            if user_iva.state == event_schemas.IvaState.UNVERIFIED
+            else ""
+        )
 
-        match user_iva.state:
-            case event_schemas.IvaState.CODE_REQUESTED:
-                notification_name = "IVA Code Requested"
-
-            case event_schemas.IvaState.CODE_TRANSMITTED:
-                notification_name = "IVA Code Transmitted"
-
-            case event_schemas.IvaState.VERIFIED:
-                notification_name = "IVA Code Verified"
-
-            case event_schemas.IvaState.UNVERIFIED:
-                notification_name = "IVA Unverified"
+        if not notification_name:
+            unexpected_iva_state_error = self.UnexpectedIvaState(state=user_iva.state)
+            log.error(
+                unexpected_iva_state_error,
+                extra={
+                    "user_id": user_iva.user_id,
+                },
+            )
+            raise unexpected_iva_state_error
 
         extra = {
             "user_id": user_iva.user_id,
