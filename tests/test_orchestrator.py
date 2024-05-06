@@ -326,3 +326,48 @@ async def test_iva_state_change(
         in_topic=joint_fixture.config.notification_event_topic,
     ):
         await joint_fixture.event_subscriber.run(forever=False)
+
+
+@pytest.mark.asyncio(scope="module")
+async def test_all_ivas_reset(joint_fixture: JointFixture):
+    """Test that the 'all IVA invalidated' events are translated into a notification."""
+    # Prepare triggering event (the IVA state change event).
+    trigger_event = event_schemas.UserIvaState(
+        user_id=TEST_USER.id,
+        state=event_schemas.IvaState.UNVERIFIED,
+        value=None,
+        type=None,
+    )
+
+    # Publish the trigger event
+    await joint_fixture.kafka.publish_event(
+        payload=trigger_event.model_dump(),
+        type_=joint_fixture.config.iva_state_changed_event_type,
+        topic=joint_fixture.config.iva_events_topic,
+        key=f"all-{TEST_USER.id}",
+    )
+
+    # Define the event that should be published by the NOS when the trigger is consumed
+    ds_email = joint_fixture.config.central_data_stewardship_email
+    expected_notification = event_schemas.Notification(
+        recipient_email=TEST_USER.email,
+        recipient_name=TEST_USER.name,
+        subject="IVA Invalidation",
+        plaintext_body=f"""
+All of your IVAs have been successfully invalidated.
+
+If you have any questions, please contact a Data Steward at GHGA: {ds_email}.
+""",
+    )
+
+    expected_event = ExpectedEvent(
+        payload=expected_notification.model_dump(),
+        type_=joint_fixture.config.notification_event_type,
+    )
+
+    # consume the event and verify that the expected event is published
+    async with joint_fixture.kafka.expect_events(
+        events=[expected_event],
+        in_topic=joint_fixture.config.notification_event_topic,
+    ):
+        await joint_fixture.event_subscriber.run(forever=False)

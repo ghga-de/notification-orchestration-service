@@ -136,7 +136,11 @@ FILE_REGISTERED_TO_DS = Notification(
 
 ALL_IVAS_INVALIDATED_TO_USER = Notification(
     "IVA Invalidation",
-    "All of your IVAs have been successfully invalidated.",
+    """
+All of your IVAs have been successfully invalidated.
+
+If you have any questions, please contact a Data Steward at GHGA: {email}.
+""",
 )
 
 IVA_CODE_REQUESTED_TO_USER = Notification(

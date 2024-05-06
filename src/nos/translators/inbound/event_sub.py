@@ -119,7 +119,7 @@ class EventSubTranslator(EventSubscriberProtocol):
     async def _handle_all_ivas_reset(self, payload: JsonObject) -> None:
         """Send notifications for all IVA resets."""
         validated_payload = get_validated_payload(payload, event_schemas.UserIvaState)
-        await self._orchestrator.process_all_ivas_reset(
+        await self._orchestrator.process_all_ivas_invalidated(
             user_id=validated_payload.user_id
         )
 

@@ -248,7 +248,7 @@ class Orchestrator(OrchestratorPort):
             ),
         )
 
-    async def process_all_ivas_reset(self, *, user_id: str):
+    async def process_all_ivas_invalidated(self, *, user_id: str):
         """Send a notification to the user when all their IVAs are reset."""
         try:
             user = await self._user_dao.get_by_id(user_id)
@@ -265,7 +265,9 @@ class Orchestrator(OrchestratorPort):
         await self._notification_emitter.notify(
             email=user.email,
             full_name=user.name,
-            notification=notifications.ALL_IVAS_INVALIDATED_TO_USER,
+            notification=notifications.ALL_IVAS_INVALIDATED_TO_USER.formatted(
+                email=self._config.central_data_stewardship_email
+            ),
         )
 
     async def process_iva_state_change(self, *, user_iva: event_schemas.UserIvaState):
