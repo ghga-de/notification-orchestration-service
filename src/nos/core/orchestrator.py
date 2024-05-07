@@ -221,7 +221,7 @@ class Orchestrator(OrchestratorPort):
         )
 
     async def _iva_code_validated(self, *, user: User):
-        """Send a notification to the data steward that an IVA code has been submitted."""
+        """Send a notification to the data steward that an IVA code has been validated."""
         await self._notification_emitter.notify(
             email=self._config.central_data_stewardship_email,
             full_name=DATA_STEWARD_NAME,
