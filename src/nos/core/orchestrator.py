@@ -220,7 +220,7 @@ class Orchestrator(OrchestratorPort):
             notification=notifications.IVA_CODE_TRANSMITTED_TO_USER,
         )
 
-    async def _iva_code_submitted(self, *, user: User):
+    async def _iva_code_validated(self, *, user: User):
         """Send a notification to the data steward that an IVA code has been submitted."""
         await self._notification_emitter.notify(
             email=self._config.central_data_stewardship_email,
@@ -272,29 +272,30 @@ class Orchestrator(OrchestratorPort):
 
     async def process_iva_state_change(self, *, user_iva: event_schemas.UserIvaState):
         """Handle notifications for IVA state changes."""
-        method_map: dict[event_schemas.IvaState, Callable] = {
-            event_schemas.IvaState.CODE_REQUESTED: self._iva_code_requested,
-            event_schemas.IvaState.CODE_TRANSMITTED: self._iva_code_transmitted,
-            event_schemas.IvaState.VERIFIED: self._iva_code_submitted,
-            event_schemas.IvaState.UNVERIFIED: partial(
-                self._iva_unverified,
-                iva_type=str(user_iva.type) if user_iva.type else "N/A",
+        # Map IVA states to their corresponding notification methods and a name for logs
+        method_map: dict[event_schemas.IvaState, tuple[Callable, str]] = {
+            event_schemas.IvaState.CODE_REQUESTED: (
+                self._iva_code_requested,
+                "IVA Code Requested",
+            ),
+            event_schemas.IvaState.CODE_TRANSMITTED: (
+                self._iva_code_transmitted,
+                "IVA Code Transmitted",
+            ),
+            event_schemas.IvaState.VERIFIED: (
+                self._iva_code_validated,
+                "IVA Code Validated",
+            ),
+            event_schemas.IvaState.UNVERIFIED: (
+                partial(
+                    self._iva_unverified,
+                    iva_type=str(user_iva.type) if user_iva.type else "N/A",
+                ),
+                "IVA Unverified",
             ),
         }
 
-        notification_name = (
-            "IVA Code Requested"
-            if user_iva.state == event_schemas.IvaState.CODE_REQUESTED
-            else "IVA Code Transmitted"
-            if user_iva.state == event_schemas.IvaState.CODE_TRANSMITTED
-            else "IVA Code Verified"
-            if user_iva.state == event_schemas.IvaState.VERIFIED
-            else "IVA Unverified"
-            if user_iva.state == event_schemas.IvaState.UNVERIFIED
-            else ""
-        )
-
-        if not notification_name:
+        if user_iva.state not in method_map:
             unexpected_iva_state_error = self.UnexpectedIvaState(state=user_iva.state)
             log.error(
                 unexpected_iva_state_error,
@@ -306,7 +307,7 @@ class Orchestrator(OrchestratorPort):
 
         extra = {
             "user_id": user_iva.user_id,
-            "notification_name": notification_name,
+            "notification_name": method_map[user_iva.state][1],
         }
 
         try:
@@ -318,4 +319,4 @@ class Orchestrator(OrchestratorPort):
             log.error(error, extra=extra)
             raise error from err
 
-        await method_map[user_iva.state](user=user)
+        await method_map[user_iva.state][0](user=user)
