@@ -135,20 +135,19 @@ FILE_REGISTERED_TO_DS = Notification(
 )
 
 ALL_IVAS_INVALIDATED_TO_USER = Notification(
-    "IVA Invalidation",
+    "Contact Address Invalidation",
     """
-All of your IVAs have been successfully invalidated.
+All of your registered contact addresses now need re-verification due to the establishment
+of a new 2nd authentication factor.
 
 If you have any questions, please contact a Data Steward at GHGA: {email}.
 """,
 )
 
 IVA_CODE_REQUESTED_TO_USER = Notification(
-    "IVA Request Received",
+    "Contact Address Verification Code Request Received",
     """
-Your request for an IVA verification code has been received.
-
-A Data Steward will review your request soon.
+A verification code will be sent to you soon via the specified contact address.
 """,
 )
 
@@ -162,11 +161,11 @@ The specified contact email address is: {email}.
 )
 
 IVA_CODE_TRANSMITTED_TO_USER = Notification(
-    "IVA Verification Code Transmitted",
+    "Contact Address Verification Code Transmitted",
     """
 A Data Steward has transmitted a verification code to the address specified by
-your IVA. Please check for the IVA verification code and submit it on the GHGA
-Data Portal.
+your contact address. Please check for the verification code and submit it on the
+GHGA Data Portal.
 """,
 )
 
