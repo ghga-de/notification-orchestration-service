@@ -98,14 +98,9 @@ async def test_access_request(
     """
     test_user = await joint_fixture.user_dao.get_by_id(TEST_USER.id)
 
-    event_type_to_use = ""
-    match event_type:
-        case "created":
-            event_type_to_use = joint_fixture.config.access_request_created_event_type
-        case "allowed":
-            event_type_to_use = joint_fixture.config.access_request_allowed_event_type
-        case "denied":
-            event_type_to_use = joint_fixture.config.access_request_denied_event_type
+    event_type_to_use = joint_fixture.config.model_dump()[
+        f"access_request_{event_type}_event_type"
+    ]
 
     assert event_type_to_use
 
@@ -335,7 +330,7 @@ async def test_iva_state_change(
         key=TEST_USER.id,
     )
 
-    # Build a the notification payload for the user, if applicable
+    # Build a notification payload for the user, if applicable
     user_notification = (
         event_schemas.Notification(
             recipient_email=TEST_USER.email,
@@ -347,7 +342,7 @@ async def test_iva_state_change(
         else None
     )
 
-    # Build a the notification payload for the data steward, if applicable
+    # Build a notification payload for the data steward, if applicable
     data_steward_notification = (
         event_schemas.Notification(
             recipient_email=joint_fixture.config.central_data_stewardship_email,
@@ -406,9 +401,10 @@ async def test_all_ivas_reset(joint_fixture: JointFixture):
     expected_notification = event_schemas.Notification(
         recipient_email=TEST_USER.email,
         recipient_name=TEST_USER.name,
-        subject="IVA Invalidation",
+        subject="Contact Address Invalidation",
         plaintext_body=f"""
-All of your IVAs have been successfully invalidated.
+All of your registered contact addresses now need re-verification due to the establishment
+of a new 2nd authentication factor.
 
 If you have any questions, please contact a Data Steward at GHGA: {ds_email}.
 """,
