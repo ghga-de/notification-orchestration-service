@@ -145,7 +145,7 @@ If you have any questions, please contact a Data Steward at GHGA: {email}.
 )
 
 IVA_CODE_REQUESTED_TO_USER = Notification(
-    "Contact Address Verification Code Request Received",
+    "Contact Address Verification Request Received",
     """
 A verification code will be sent to you soon via the specified contact address.
 """,
