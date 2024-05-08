@@ -98,7 +98,9 @@ async def test_access_request(
     """
     test_user = await joint_fixture.user_dao.get_by_id(TEST_USER.id)
 
-    event_type_to_use = getattr(joint_fixture.config, f"access_request_{event_type}_event_type")
+    event_type_to_use = getattr(
+        joint_fixture.config, f"access_request_{event_type}_event_type"
+    )
 
     assert event_type_to_use
 
