@@ -18,6 +18,7 @@
 
 import logging
 from collections.abc import Callable
+from contextlib import suppress
 from functools import partial
 
 from ghga_event_schemas import pydantic_ as event_schemas
@@ -325,3 +326,50 @@ class Orchestrator(OrchestratorPort):
             raise error from err
 
         await method_map[user_iva.state][0](user=user)
+
+    def _changed_info(
+        self, existing_user: event_schemas.User, new_user: event_schemas.User
+    ) -> str:
+        """Check if critical user information has changed.
+
+        Critical information includes the user's email address and name.
+        """
+        changed = []
+        for field in ["email", "name"]:
+            if getattr(existing_user, field) != getattr(new_user, field):
+                changed.append(field)
+        return " and ".join(changed)
+
+    async def upsert_user_data(
+        self, resource_id: str, update: event_schemas.User
+    ) -> None:
+        """Upsert the user data.
+
+        This method will also examine the user data and send out notifications for
+        user re-registration.
+        """
+        with suppress(ResourceNotFoundError):
+            existing_user = await self._user_dao.get_by_id(resource_id)
+            if changed_details := self._changed_info(existing_user, update):
+                await self._notification_emitter.notify(
+                    email=existing_user.email,
+                    full_name=existing_user.name,
+                    notification=notifications.USER_REREGISTERED_TO_USER.formatted(
+                        support_email=self._config.central_data_stewardship_email,
+                        changed_details=changed_details,
+                    ),
+                )
+                log.info("Sent User Re-registered notification to user")
+        await self._user_dao.upsert(dto=update)
+
+    async def delete_user_data(self, resource_id: str) -> None:
+        """Delete the user data.
+
+        In the case that the user ID does not exist in the database, this method will
+        log the fact but not raise an error.
+        """
+        try:
+            await self._user_dao.delete(id_=resource_id)
+        except ResourceNotFoundError:
+            # do not raise an error if the user is not found, just log it.
+            log.warning("User not found for deletion", extra={"user_id": resource_id})

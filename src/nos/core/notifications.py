@@ -187,3 +187,13 @@ many failed verification attempts.
 The specified contact email address is: {email}.
 """,
 )
+
+USER_REREGISTERED_TO_USER = Notification(
+    "Account Details Changed",
+    """
+Your account details were recently updated. The changed details include: {changed_details}.
+
+If you did not make the following changes or have
+please contact the GHGA immediately at {support_email}.
+""",
+)

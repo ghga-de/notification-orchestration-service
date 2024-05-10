@@ -27,5 +27,5 @@ async def user_dao_factory(*, dao_factory: DaoFactoryProtocol) -> UserDaoPort:
     return await dao_factory.get_dao(
         name="users",
         dto_model=event_schemas.User,
-        id_field="id",
+        id_field="user_id",
     )
