@@ -20,23 +20,6 @@ from typing import NamedTuple
 
 log = logging.getLogger(__name__)
 
-__all__ = [
-    "Notification",
-    "ACCESS_REQUEST_CREATED_TO_USER",
-    "ACCESS_REQUEST_CREATED_TO_DS",
-    "ACCESS_REQUEST_ALLOWED_TO_USER",
-    "ACCESS_REQUEST_ALLOWED_TO_DS",
-    "ACCESS_REQUEST_DENIED_TO_USER",
-    "ACCESS_REQUEST_DENIED_TO_DS",
-    "FILE_REGISTERED_TO_DS",
-    "ALL_IVAS_INVALIDATED_TO_USER",
-    "IVA_CODE_REQUESTED_TO_USER",
-    "IVA_CODE_REQUESTED_TO_DS",
-    "IVA_CODE_TRANSMITTED_TO_USER",
-    "IVA_CODE_SUBMITTED_TO_DS",
-    "IVA_UNVERIFIED_TO_DS",
-]
-
 
 class NotificationError(RuntimeError):
     """Raised for notification-related errors."""
