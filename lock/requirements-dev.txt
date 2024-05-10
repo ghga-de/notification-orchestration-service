@@ -264,9 +264,9 @@ h11==0.14.0 \
     # via
     #   httpcore
     #   uvicorn
-hexkit==3.0.1 \
-    --hash=sha256:0d854aa8c0f5539338a50ed363557d4bbf720ca01afde9f07512cb76a7be398d \
-    --hash=sha256:61347f4564eb557bb4dea176a0085dc85391a4a5eb32681433b7afc1487df3aa
+hexkit==3.0.2 \
+    --hash=sha256:172c55b756ea0a5ff5e83ba97860947408a132bb37800404e6e7b1cabab9d3e7 \
+    --hash=sha256:d8cb77d64c6021725f6e40e87d62792e22a8928810de983f96a6ecfe9245f1f8
     # via ghga-service-commons
 httpcore==1.0.5 \
     --hash=sha256:34a38e2f9291467ee3b44e89dd52615370e152954ba21721378a87b2960f7a61 \

@@ -56,7 +56,7 @@ async def insert_test_data(joint_fixture: JointFixture):
     await joint_fixture.user_dao.insert(TEST_USER)
     yield
     try:
-        await joint_fixture.user_dao.delete(id_=TEST_USER.user_id)
+        await joint_fixture.user_dao.delete(TEST_USER.user_id)
     except ResourceNotFoundError:
         pass
 

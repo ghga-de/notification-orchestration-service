@@ -369,7 +369,7 @@ class Orchestrator(OrchestratorPort):
         log the fact but not raise an error.
         """
         try:
-            await self._user_dao.delete(id_=resource_id)
+            await self._user_dao.delete(resource_id)
         except ResourceNotFoundError:
             # do not raise an error if the user is not found, just log it.
             log.warning("User not found for deletion", extra={"user_id": resource_id})
