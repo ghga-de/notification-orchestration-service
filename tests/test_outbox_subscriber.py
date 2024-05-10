@@ -25,7 +25,7 @@ DELETE_EVENT_TYPE = "deleted"
 
 
 @pytest.mark.parametrize("user_id", ["test_id", "does_not_exist"])
-@pytest.mark.asyncio(scope="module")
+@pytest.mark.asyncio
 async def test_user_data_deletion(joint_fixture: JointFixture, user_id: str):
     """Ensure that the `delete` function works correctly.
 

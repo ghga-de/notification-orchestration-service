@@ -47,14 +47,14 @@ class JointFixture:
 
 
 async def joint_fixture_function(
-    mongodb_fixture: MongoDbFixture, kafka_fixture: KafkaFixture
+    mongodb: MongoDbFixture, kafka: KafkaFixture
 ) -> AsyncGenerator[JointFixture, None]:
     """A fixture that embeds all other fixtures for API-level integration testing
 
     **Do not call directly** Instead, use get_joint_fixture().
     """
     # merge configs from different sources with the default one:
-    config = get_config(sources=[mongodb_fixture.config, kafka_fixture.config])
+    config = get_config(sources=[mongodb.config, kafka.config])
 
     # create a DI container instance:translators
     async with prepare_core(config=config) as orchestrator:
@@ -71,11 +71,9 @@ async def joint_fixture_function(
                 orchestrator=orchestrator,
                 event_subscriber=event_subscriber,
                 outbox_subscriber=outbox_subscriber,
-                kafka=kafka_fixture,
-                mongodb=mongodb_fixture,
-                user_dao=await user_dao_factory(
-                    dao_factory=mongodb_fixture.dao_factory
-                ),
+                kafka=kafka,
+                mongodb=mongodb,
+                user_dao=await user_dao_factory(dao_factory=mongodb.dao_factory),
             )
 
 
