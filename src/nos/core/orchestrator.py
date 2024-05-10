@@ -353,7 +353,7 @@ class Orchestrator(OrchestratorPort):
             if changed_details := self._changed_info(existing_user, update):
                 await self._notification_emitter.notify(
                     email=existing_user.email,
-                    full_name=existing_user.name,
+                    full_name=update.name,
                     notification=notifications.USER_REREGISTERED_TO_USER.formatted(
                         support_email=self._config.central_data_stewardship_email,
                         changed_details=changed_details,
