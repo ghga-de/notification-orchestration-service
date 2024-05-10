@@ -16,17 +16,20 @@
 """Test-suite-wide fixture declaration."""
 
 import pytest_asyncio
+from ghga_event_schemas import pydantic_ as event_schemas
 from hexkit.providers.akafka.testutils import get_kafka_fixture
 from hexkit.providers.mongodb.testutils import get_mongodb_fixture
 
-from nos.core.models import AcademicTitle, User
 from tests.fixtures.joint import JointFixture, get_joint_fixture
 
 mongodb_fixture = get_mongodb_fixture(scope="module")
 kafka_fixture = get_kafka_fixture(scope="module")
 joint_fixture = get_joint_fixture(scope="module")
-TEST_USER = User(
-    id="test", name="test user", title=AcademicTitle.DR, email="test@test.abc"
+TEST_USER = event_schemas.User(
+    user_id="test_id",
+    name="test user",
+    title=event_schemas.AcademicTitle.DR,
+    email="test@test.abc",
 )
 
 
@@ -40,4 +43,4 @@ async def insert_test_data(joint_fixture: JointFixture):
     """
     await joint_fixture.user_dao.insert(TEST_USER)
     yield
-    await joint_fixture.user_dao.delete(id_=TEST_USER.id)
+    await joint_fixture.user_dao.delete(id_=TEST_USER.user_id)
