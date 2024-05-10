@@ -21,12 +21,12 @@ from dataclasses import dataclass
 
 import pytest_asyncio
 from hexkit.custom_types import PytestScope
-from hexkit.providers.akafka import KafkaEventSubscriber
+from hexkit.providers.akafka import KafkaEventSubscriber, KafkaOutboxSubscriber
 from hexkit.providers.akafka.testutils import KafkaFixture
 from hexkit.providers.mongodb.testutils import MongoDbFixture
 
 from nos.config import Config
-from nos.inject import prepare_core, prepare_event_subscriber
+from nos.inject import prepare_core, prepare_event_subscriber, prepare_outbox_subscriber
 from nos.ports.inbound.orchestrator import OrchestratorPort
 from nos.ports.outbound.dao import UserDaoPort
 from nos.translators.outbound.dao import user_dao_factory
@@ -40,6 +40,7 @@ class JointFixture:
     config: Config
     orchestrator: OrchestratorPort
     event_subscriber: KafkaEventSubscriber
+    outbox_subscriber: KafkaOutboxSubscriber
     kafka: KafkaFixture
     mongodb: MongoDbFixture
     user_dao: UserDaoPort
@@ -57,13 +58,19 @@ async def joint_fixture_function(
 
     # create a DI container instance:translators
     async with prepare_core(config=config) as orchestrator:
-        async with prepare_event_subscriber(
-            config=config, core_override=orchestrator
-        ) as event_subscriber:
+        async with (
+            prepare_event_subscriber(
+                config=config, core_override=orchestrator
+            ) as event_subscriber,
+            prepare_outbox_subscriber(
+                config=config, core_override=orchestrator
+            ) as outbox_subscriber,
+        ):
             yield JointFixture(
                 config=config,
                 orchestrator=orchestrator,
                 event_subscriber=event_subscriber,
+                outbox_subscriber=outbox_subscriber,
                 kafka=kafka_fixture,
                 mongodb=mongodb_fixture,
                 user_dao=await user_dao_factory(

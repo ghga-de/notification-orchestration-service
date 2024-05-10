@@ -17,6 +17,7 @@
 
 import pytest_asyncio
 from ghga_event_schemas import pydantic_ as event_schemas
+from hexkit.protocols.dao import ResourceNotFoundError
 from hexkit.providers.akafka.testutils import get_kafka_fixture
 from hexkit.providers.mongodb.testutils import get_mongodb_fixture
 
@@ -43,4 +44,7 @@ async def insert_test_data(joint_fixture: JointFixture):
     """
     await joint_fixture.user_dao.insert(TEST_USER)
     yield
-    await joint_fixture.user_dao.delete(id_=TEST_USER.user_id)
+    try:
+        await joint_fixture.user_dao.delete(id_=TEST_USER.user_id)
+    except ResourceNotFoundError:
+        pass

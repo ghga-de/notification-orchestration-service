@@ -91,6 +91,16 @@ The service requires the following configuration parameters:
   ```
 
 
+- **`user_data_event_topic`** *(string)*: The name of the topic containing user data events.
+
+
+  Examples:
+
+  ```json
+  "user_data_events"
+  ```
+
+
 - **`access_request_events_topic`** *(string)*: Name of the event topic used to consume access request events.
 
 
