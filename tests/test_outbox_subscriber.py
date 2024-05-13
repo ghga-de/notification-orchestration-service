@@ -113,8 +113,9 @@ async def test_user_data_upsert(
         {"email": "different@example.com"},
         {"name": "another name", "email": "anders@example.com"},
         {},
+        {"title": event_schemas.AcademicTitle.PROF},
     ],
-    ids=["name", "email", "both", "neither"],
+    ids=["name", "email", "both", "neither", "title"],
 )
 async def test_user_reregistration_notifications(
     joint_fixture: JointFixture,
@@ -138,7 +139,7 @@ async def test_user_reregistration_notifications(
 
     # Prepare the expected notification.
     expected_notifications = []
-    if changed_details:
+    if "name" in changed_details or "email" in changed_details:
         expected_notifications.append(
             event_schemas.Notification(
                 recipient_email=TEST_USER.email
