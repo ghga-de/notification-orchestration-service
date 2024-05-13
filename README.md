@@ -153,7 +153,7 @@ The service requires the following configuration parameters:
   ```
 
 
-- **`iva_events_topic`** *(string)*: The name of the topic containing IVA events.
+- **`iva_state_changed_event_topic`** *(string)*: The name of the topic containing IVA events.
 
 
   Examples:

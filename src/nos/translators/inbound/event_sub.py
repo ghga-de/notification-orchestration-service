@@ -59,7 +59,7 @@ class EventSubTranslatorConfig(BaseSettings):
         description="The type used for events detailing internally file registrations.",
         examples=["file_registered"],
     )
-    iva_events_topic: str = Field(
+    iva_state_changed_event_topic: str = Field(
         default=...,
         description="The name of the topic containing IVA events.",
         examples=["ivas"],
@@ -80,7 +80,7 @@ class EventSubTranslator(EventSubscriberProtocol):
         self.topics_of_interest = [
             config.access_request_events_topic,
             config.file_registered_event_topic,
-            config.iva_events_topic,
+            config.iva_state_changed_event_topic,
         ]
         self.types_of_interest = [
             config.access_request_created_event_type,

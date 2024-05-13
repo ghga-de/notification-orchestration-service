@@ -322,7 +322,7 @@ async def test_iva_state_change(
     await joint_fixture.kafka.publish_event(
         payload=trigger_event.model_dump(),
         type_=joint_fixture.config.iva_state_changed_event_type,
-        topic=joint_fixture.config.iva_events_topic,
+        topic=joint_fixture.config.iva_state_changed_event_topic,
         key=TEST_USER.user_id,
     )
 
@@ -387,7 +387,7 @@ async def test_all_ivas_reset(joint_fixture: JointFixture):
     await joint_fixture.kafka.publish_event(
         payload=trigger_event.model_dump(),
         type_=joint_fixture.config.iva_state_changed_event_type,
-        topic=joint_fixture.config.iva_events_topic,
+        topic=joint_fixture.config.iva_state_changed_event_topic,
         key=f"all-{TEST_USER.user_id}",
     )
 
