@@ -28,6 +28,7 @@ from tests.conftest import TEST_USER
 from tests.fixtures.joint import JointFixture
 
 DATASET_ID = "dataset1"
+pytestmark = pytest.mark.asyncio()
 
 
 def access_request_payload(user_id: str) -> dict[str, Any]:
@@ -83,7 +84,6 @@ def iva_state_payload(user_id: str, state: event_schemas.IvaState) -> dict[str, 
         ),
     ],
 )
-@pytest.mark.asyncio
 async def test_access_request(
     joint_fixture: JointFixture,
     user_notification_content: notifications.Notification,
@@ -159,7 +159,6 @@ async def test_access_request(
         await joint_fixture.event_subscriber.run(forever=False)
 
 
-@pytest.mark.asyncio
 async def test_missing_user_id_access_requests(
     joint_fixture: JointFixture, logot: Logot
 ):
@@ -191,7 +190,6 @@ async def test_missing_user_id_access_requests(
         )
 
 
-@pytest.mark.asyncio
 async def test_missing_user_id_iva_state_changes(
     joint_fixture: JointFixture, logot: Logot
 ):
@@ -228,7 +226,6 @@ async def test_missing_user_id_iva_state_changes(
         )
 
 
-@pytest.mark.asyncio
 async def test_file_registered(joint_fixture: JointFixture):
     """Test that the file registered events are translated into a notification."""
     # Prepare triggering event (the file registration event).
@@ -302,7 +299,6 @@ async def test_file_registered(joint_fixture: JointFixture):
         ),
     ],
 )
-@pytest.mark.asyncio
 async def test_iva_state_change(
     joint_fixture: JointFixture,
     iva_state: event_schemas.IvaState,
@@ -377,7 +373,6 @@ async def test_iva_state_change(
         await joint_fixture.event_subscriber.run(forever=False)
 
 
-@pytest.mark.asyncio
 async def test_all_ivas_reset(joint_fixture: JointFixture):
     """Test that the 'all IVA invalidated' events are translated into a notification."""
     # Prepare triggering event (the IVA state change event).

@@ -23,4 +23,4 @@ notification_event_topic: notification_events
 notification_event_type: notification
 service_instance_id: '1'
 service_name: nos
-user_data_event_topic: user_events
+user_events_topic: users

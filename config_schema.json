@@ -36,12 +36,10 @@
       "title": "Notification Event Type",
       "type": "string"
     },
-    "user_data_event_topic": {
-      "description": "The name of the topic containing user data events.",
-      "examples": [
-        "user_data_events"
-      ],
-      "title": "User Data Event Topic",
+    "user_events_topic": {
+      "default": "users",
+      "description": "The name of the topic containing user events.",
+      "title": "User Events Topic",
       "type": "string"
     },
     "access_request_events_topic": {
@@ -223,7 +221,6 @@
     "db_name",
     "notification_event_topic",
     "notification_event_type",
-    "user_data_event_topic",
     "access_request_events_topic",
     "access_request_created_event_type",
     "access_request_allowed_event_type",

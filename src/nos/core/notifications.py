@@ -176,7 +176,6 @@ USER_REREGISTERED_TO_USER = Notification(
     """
 Your account details were recently updated. The changed details include: {changed_details}.
 
-If you did not make the following changes or have
-please contact the GHGA immediately at {support_email}.
+If you did not make these changes or have questions, please contact the GHGA immediately at {support_email}.
 """,
 )

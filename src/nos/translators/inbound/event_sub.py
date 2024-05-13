@@ -147,10 +147,9 @@ class EventSubTranslator(EventSubscriberProtocol):
 class OutboxSubTranslatorConfig(BaseSettings):
     """Config for the outbox subscriber"""
 
-    user_data_event_topic: str = Field(
-        default=...,
-        description="The name of the topic containing user data events.",
-        examples=["user_data_events"],
+    user_events_topic: str = Field(
+        default="users",
+        description="The name of the topic containing user events.",
     )
 
 
@@ -168,7 +167,7 @@ class OutboxSubTranslator(DaoSubscriberProtocol[event_schemas.User]):
     ):
         self._config = config
         self._orchestrator = orchestrator
-        self.event_topic = config.user_data_event_topic
+        self.event_topic = config.user_events_topic
 
     async def changed(self, resource_id: str, update: event_schemas.User) -> None:
         """Consume change event (created or updated) for user data."""

@@ -330,7 +330,7 @@ class Orchestrator(OrchestratorPort):
     def _changed_info(
         self, existing_user: event_schemas.User, new_user: event_schemas.User
     ) -> str:
-        """Check if critical user information has changed.
+        """Check what critical user information has changed (if any).
 
         Critical information includes the user's email address and name.
         """

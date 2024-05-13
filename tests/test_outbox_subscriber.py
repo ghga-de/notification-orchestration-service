@@ -27,9 +27,10 @@ from tests.fixtures.joint import JointFixture
 CHANGE_EVENT_TYPE = "upserted"
 DELETE_EVENT_TYPE = "deleted"
 
+pytestmark = pytest.mark.asyncio()
+
 
 @pytest.mark.parametrize("user_id", ["test_id", "does_not_exist"])
-@pytest.mark.asyncio
 async def test_user_data_deletion(joint_fixture: JointFixture, user_id: str):
     """Ensure that the `delete` function works correctly.
 
@@ -45,7 +46,7 @@ async def test_user_data_deletion(joint_fixture: JointFixture, user_id: str):
     await joint_fixture.kafka.publish_event(
         payload={},
         type_=DELETE_EVENT_TYPE,
-        topic=joint_fixture.config.user_data_event_topic,
+        topic=joint_fixture.config.user_events_topic,
         key=user_id,
     )
 
@@ -73,7 +74,6 @@ async def test_user_data_deletion(joint_fixture: JointFixture, user_id: str):
     ],
     ids=["modified user", "new user"],
 )
-@pytest.mark.asyncio
 async def test_user_data_upsert(
     joint_fixture: JointFixture,
     user: event_schemas.User,
@@ -94,14 +94,14 @@ async def test_user_data_upsert(
     await joint_fixture.kafka.publish_event(
         payload=user.model_dump(),
         type_=CHANGE_EVENT_TYPE,
-        topic=joint_fixture.config.user_data_event_topic,
+        topic=joint_fixture.config.user_events_topic,
         key=user.user_id,
     )
 
     # Run the outbox subscriber.
     await joint_fixture.outbox_subscriber.run(forever=False)
 
-    # 4. Check that the user data is found.
+    # Check that the user data is found.
     result = await joint_fixture.user_dao.get_by_id(user.user_id)
     assert result == user
 
@@ -116,7 +116,6 @@ async def test_user_data_upsert(
     ],
     ids=["name", "email", "both", "neither"],
 )
-@pytest.mark.asyncio
 async def test_user_reregistration_notifications(
     joint_fixture: JointFixture,
     changed_details: dict[str, str],
@@ -133,7 +132,7 @@ async def test_user_reregistration_notifications(
     await joint_fixture.kafka.publish_event(
         payload=user.model_dump(),
         type_=CHANGE_EVENT_TYPE,
-        topic=joint_fixture.config.user_data_event_topic,
+        topic=joint_fixture.config.user_events_topic,
         key=user.user_id,
     )
 
