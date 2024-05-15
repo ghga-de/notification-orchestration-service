@@ -1,6 +1,6 @@
 [project]
 name = "nos"
-version = "0.1.0"
+version = "1.0.0"
 description = "The Notification Orchestration Service controls the creation of notification events."
 dependencies = [
     "typer >= 0.9.0",
