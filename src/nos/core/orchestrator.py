@@ -394,5 +394,7 @@ class Orchestrator(OrchestratorPort):
         await self._notification_emitter.notify(
             email=user.email,
             full_name=user.name,
-            notification=notifications.SECOND_FACTOR_RECREATED_TO_USER,
+            notification=notifications.SECOND_FACTOR_RECREATED_TO_USER.formatted(
+                support_email=self._config.central_data_stewardship_email
+            ),
         )
