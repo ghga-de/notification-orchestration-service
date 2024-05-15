@@ -173,6 +173,26 @@ The service requires the following configuration parameters:
   ```
 
 
+- **`second_factor_recreated_event_topic`** *(string)*: The name of the topic containing second factor recreation events.
+
+
+  Examples:
+
+  ```json
+  "auth"
+  ```
+
+
+- **`second_factor_recreated_event_type`** *(string)*: The event type for recreation of the second factor for authentication.
+
+
+  Examples:
+
+  ```json
+  "second_factor_recreated"
+  ```
+
+
 - **`service_name`** *(string)*: The Notification Orchestration Service controls the creation of notification events. Default: `"nos"`.
 
 - **`service_instance_id`** *(string)*: A string that uniquely identifies this instance across all instances of this service. This is included in log messages.

@@ -69,6 +69,16 @@ class EventSubTranslatorConfig(BaseSettings):
         description="The type to use for iva state changed events.",
         examples=["iva_state_changed"],
     )
+    second_factor_recreated_event_topic: str = Field(
+        default=...,
+        description="The name of the topic containing second factor recreation events.",
+        examples=["auth"],
+    )
+    second_factor_recreated_event_type: str = Field(
+        default=...,
+        description="The event type for recreation of the second factor for authentication",
+        examples=["second_factor_recreated"],
+    )
 
 
 class EventSubTranslator(EventSubscriberProtocol):
