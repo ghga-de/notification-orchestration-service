@@ -161,6 +161,8 @@ class EventSubTranslator(EventSubscriberProtocol):
                     await self._handle_all_ivas_reset(payload=payload)
                 else:
                     await self._handle_iva_state_change(payload=payload)
+            case self._config.second_factor_recreated_event_type:
+                await self._handle_second_factor_recreated(payload=payload)
 
 
 class OutboxSubTranslatorConfig(BaseSettings):
