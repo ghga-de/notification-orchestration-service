@@ -181,9 +181,9 @@ If you did not make these changes or have questions, please contact the GHGA imm
 )
 
 SECOND_FACTOR_RECREATED_TO_USER = Notification(
-    "TOTP Token Recreated",
+    "2FA Setup Recreated",
     """
-Your TOTP token has been recreated.
+The setup for authentication with a 2FA authenticator app has been changed.
 
 If you did not make these changes or have questions, please contact the GHGA immediately at {support_email}.
 """,
