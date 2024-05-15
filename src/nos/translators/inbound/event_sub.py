@@ -91,6 +91,7 @@ class EventSubTranslator(EventSubscriberProtocol):
             config.access_request_events_topic,
             config.file_registered_event_topic,
             config.iva_state_changed_event_topic,
+            config.second_factor_recreated_event_topic,
         ]
         self.types_of_interest = [
             config.access_request_created_event_type,
@@ -98,6 +99,7 @@ class EventSubTranslator(EventSubscriberProtocol):
             config.access_request_denied_event_type,
             config.file_registered_event_type,
             config.iva_state_changed_event_type,
+            config.second_factor_recreated_event_type,
         ]
         self._config = config
         self._orchestrator = orchestrator
@@ -131,6 +133,13 @@ class EventSubTranslator(EventSubscriberProtocol):
         """Send notifications for all IVA resets."""
         validated_payload = get_validated_payload(payload, event_schemas.UserIvaState)
         await self._orchestrator.process_all_ivas_invalidated(
+            user_id=validated_payload.user_id
+        )
+
+    async def _handle_second_factor_recreated(self, payload: JsonObject) -> None:
+        """Send notifications for second factor recreation."""
+        validated_payload = get_validated_payload(payload, event_schemas.UserID)
+        await self._orchestrator.process_second_factor_recreated(
             user_id=validated_payload.user_id
         )
 
