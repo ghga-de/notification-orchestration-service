@@ -179,3 +179,12 @@ Your account details were recently updated. The changed details include: {change
 If you did not make these changes or have questions, please contact the GHGA immediately at {support_email}.
 """,
 )
+
+SECOND_FACTOR_RECREATED_TO_USER = Notification(
+    "TOTP Token Recreated",
+    """
+Your TOTP token has been recreated.
+
+If you did not make these changes or have questions, please contact the GHGA immediately at {support_email}.
+""",
+)
