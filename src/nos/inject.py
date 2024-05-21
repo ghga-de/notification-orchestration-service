@@ -15,7 +15,6 @@
 #
 """Module hosting the dependency injection framework."""
 
-import logging
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
@@ -36,8 +35,6 @@ from nos.translators.inbound.event_sub import (
 )
 from nos.translators.outbound.dao import user_dao_factory
 from nos.translators.outbound.event_pub import NotificationEmitter
-
-log = logging.getLogger(__name__)
 
 
 @asynccontextmanager

@@ -16,14 +16,11 @@
 """Top-level functions for the service"""
 
 import asyncio
-import logging
 
 from hexkit.log import configure_logging
 
 from nos.config import Config
 from nos.inject import prepare_event_subscriber, prepare_outbox_subscriber
-
-log = logging.getLogger(__name__)
 
 
 async def consume_events(run_forever: bool = True):

@@ -15,8 +15,6 @@
 #
 """Event subscriber definition."""
 
-import logging
-
 from ghga_event_schemas import pydantic_ as event_schemas
 from ghga_event_schemas.validation import get_validated_payload
 from hexkit.custom_types import Ascii, JsonObject
@@ -26,8 +24,6 @@ from pydantic import Field
 from pydantic_settings import BaseSettings
 
 from nos.ports.inbound.orchestrator import OrchestratorPort
-
-log = logging.getLogger(__name__)
 
 
 class EventSubTranslatorConfig(BaseSettings):
@@ -91,7 +87,6 @@ class EventSubTranslator(EventSubscriberProtocol):
     def __init__(
         self, *, config: EventSubTranslatorConfig, orchestrator: OrchestratorPort
     ):
-        log.debug("Hit __init__ in EventSubTranslator")
         self.topics_of_interest = [
             config.access_request_events_topic,
             config.file_registered_event_topic,
@@ -152,13 +147,6 @@ class EventSubTranslator(EventSubscriberProtocol):
         self, *, payload: JsonObject, type_: Ascii, topic: Ascii, key: Ascii
     ) -> None:
         """Consumes an event"""
-        log.debug(
-            "Consuming event with type %s, topic %s, key %s, and payload %s",
-            type_,
-            topic,
-            key,
-            payload,
-        )
         match type_:
             case _ if type_ in (
                 self._config.access_request_created_event_type,
@@ -198,7 +186,6 @@ class OutboxSubTranslator(DaoSubscriberProtocol[event_schemas.User]):
         config: OutboxSubTranslatorConfig,
         orchestrator: OrchestratorPort,
     ):
-        log.debug("Hit __init__ in OutboxSubTranslator")
         self._config = config
         self._orchestrator = orchestrator
         self.event_topic = config.user_events_topic
