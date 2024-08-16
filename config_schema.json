@@ -230,6 +230,11 @@
       "description": "The email address of the central data steward.",
       "title": "Central Data Stewardship Email",
       "type": "string"
+    },
+    "helpdesk_email": {
+      "description": "The email address of the GHGA Helpdesk.",
+      "title": "Helpdesk Email",
+      "type": "string"
     }
   },
   "required": [
@@ -249,7 +254,8 @@
     "second_factor_recreated_event_type",
     "service_instance_id",
     "kafka_servers",
-    "central_data_stewardship_email"
+    "central_data_stewardship_email",
+    "helpdesk_email"
   ],
   "title": "ModSettings",
   "type": "object"
