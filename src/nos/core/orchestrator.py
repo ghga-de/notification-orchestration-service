@@ -262,7 +262,7 @@ class Orchestrator(OrchestratorPort):
             email=user.email,
             full_name=user.name,
             notification=notifications.IVA_UNVERIFIED_TO_USER.formatted(
-                type=iva_type, helpdesk_email=self._config.helpdesk_email
+                helpdesk_email=self._config.helpdesk_email
             ),
         )
 

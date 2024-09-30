@@ -349,7 +349,6 @@ async def test_iva_state_change(
             subject=expected_user_notification.subject,
             recipient_name=TEST_USER.name,
             plaintext_body=expected_user_notification.text.format(
-                type=trigger_event.type,
                 helpdesk_email=joint_fixture.config.helpdesk_email,
             ),
         )
