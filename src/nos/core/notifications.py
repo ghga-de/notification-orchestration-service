@@ -163,7 +163,7 @@ The specified contact email address is: {email}.
 IVA_UNVERIFIED_TO_USER = Notification(
     "Contact Address Invalidation",
     """
-One of your contact addresses has been invalidated due to too many failed verification attempts.
+One of your contact addresses has been invalidated due to failed verification.
 The type of contact address that was invalidated is '{type}'.
 
 If you have any questions, please contact the GHGA Helpdesk: {helpdesk_email}

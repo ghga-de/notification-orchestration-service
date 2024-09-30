@@ -254,8 +254,8 @@ class Orchestrator(OrchestratorPort):
     ):
         """Send notifications for IVAs set to 'unverified'.
 
-        This happens when the user exceeds the allotted time to submit their IVA code or
-        exhausts all the allotted verification attempts.
+        This usually happens when the user exceeds the allotted time to submit their IVA
+        code or exhausts all the allotted verification attempts.
         """
         # send a notification to the user
         await self._notification_emitter.notify(
