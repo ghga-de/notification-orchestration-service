@@ -164,7 +164,8 @@ IVA_UNVERIFIED_TO_USER = Notification(
     "Contact Address Invalidation",
     """
 One of your contact addresses has been invalidated due to failed verification.
-The complete list of your current contact addresses and their verification status may be found on your account page.
+
+To see each of your current contact addresses alongside its verification status, please visit your account page.
 
 If you have any questions, please contact the GHGA Helpdesk: {helpdesk_email}
 """,
