@@ -91,12 +91,6 @@ ghga-event-schemas==3.3.1 \
     # via
     #   -c lock/requirements-dev.txt
     #   nos (pyproject.toml)
-ghga-service-commons==3.1.7 \
-    --hash=sha256:00d7c22638d456cd1d3caf450b18069ffeb8319db79e7c16f980a3f8b4998909 \
-    --hash=sha256:ff9c23ed48b97cc0db38df3e05e7243fb3132ce7fd75bf8b49fba92d4152c178
-    # via
-    #   -c lock/requirements-dev.txt
-    #   nos (pyproject.toml)
 hexkit==3.8.0 \
     --hash=sha256:2a6d695350fba8306bf41df669c15586042bfecd55bb8c002c60ec16652b8213 \
     --hash=sha256:d65d360fa3e4b8d0ff211c32e7ca76f68c0b5fef21b1dbc3fcf8cdb0080bfa5b
@@ -160,7 +154,6 @@ pydantic==2.9.2 \
     #   -c lock/requirements-dev.txt
     #   nos (pyproject.toml)
     #   ghga-event-schemas
-    #   ghga-service-commons
     #   hexkit
     #   pydantic-settings
 pydantic-core==2.23.4 \
