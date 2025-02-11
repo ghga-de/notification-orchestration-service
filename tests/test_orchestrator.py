@@ -235,9 +235,8 @@ async def test_missing_user_id_iva_state_changes(
             await joint_fixture.event_subscriber.run(forever=False)
         logot.assert_logged(
             logged.error(
-                f"Unable to publish '{notification_name}' notification as user ID '{
-                    payload['user_id']
-                }' was not found in the database."
+                f"Unable to publish '{notification_name}' notification as user"
+                + f" ID '{payload['user_id']}' was not found in the database."
             )
         )
 
