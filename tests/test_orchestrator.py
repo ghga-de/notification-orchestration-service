@@ -190,9 +190,8 @@ async def test_missing_user_id_access_requests(
             await joint_fixture.event_subscriber.run(forever=False)
         logot.assert_logged(
             logged.error(
-                f"Unable to publish '{notification_name}' notification as user ID '{
-                    payload['user_id']
-                }' was not found in the database."
+                f"Unable to publish '{notification_name}' notification as"
+                + f" user ID '{payload['user_id']}' was not found in the database."
             )
         )
 
