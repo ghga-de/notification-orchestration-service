@@ -191,7 +191,8 @@ async def test_missing_user_id_access_requests(
         logot.assert_logged(
             logged.error(
                 f"Unable to publish '{notification_name}' notification as user ID '{
-                    payload['user_id']}' was not found in the database."
+                    payload['user_id']
+                }' was not found in the database."
             )
         )
 
@@ -235,7 +236,8 @@ async def test_missing_user_id_iva_state_changes(
         logot.assert_logged(
             logged.error(
                 f"Unable to publish '{notification_name}' notification as user ID '{
-                    payload['user_id']}' was not found in the database."
+                    payload['user_id']
+                }' was not found in the database."
             )
         )
 
