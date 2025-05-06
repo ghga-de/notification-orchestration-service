@@ -33,7 +33,7 @@ from nos.translators.inbound.event_sub import (
     EventSubTranslator,
     UserOutboxTranslator,
 )
-from nos.translators.outbound.dao import get_access_request_dao, user_dao_factory
+from nos.translators.outbound.dao import get_access_request_dao, get_user_dao
 from nos.translators.outbound.event_pub import NotificationEmitter
 
 
@@ -44,7 +44,7 @@ async def prepare_core(
 ) -> AsyncGenerator[OrchestratorPort, None]:
     """Constructs and initializes all core components and their outbound dependencies."""
     dao_factory = MongoDbDaoFactory(config=config)
-    user_dao = await user_dao_factory(dao_factory=dao_factory)
+    user_dao = await get_user_dao(dao_factory=dao_factory)
     access_request_dao = await get_access_request_dao(dao_factory=dao_factory)
 
     async with KafkaEventPublisher.construct(config=config) as event_publisher:
