@@ -88,6 +88,7 @@ We are glad to inform you that your request to download the dataset
 
 You can now start downloading the dataset as explained in the GHGA Data Portal.
 For help, please see the guide at https://docs.ghga.de/user_stories/accessing_data/
+{note_to_requester}
 """,
 )
 
@@ -106,6 +107,7 @@ Unfortunately, your request to download the dataset {dataset_id} has been reject
 
 Please contact the Data Controller or Data Access Committee for information
 about this decision.
+{note_to_requester}
 """,
 )
 

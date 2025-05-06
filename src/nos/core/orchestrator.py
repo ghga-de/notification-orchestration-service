@@ -161,11 +161,21 @@ class Orchestrator(OrchestratorPort):
                 text interpolation.
         """
         # Send a notification to the data requester
+        note_to_requester = (
+            (
+                "\nThe Data Steward has also included the following note:\n"
+                + access_request.note_to_requester
+            )
+            if access_request.note_to_requester
+            else ""
+        )
+
         await self._notification_emitter.notify(
             email=user.email,
             full_name=user.name,
             notification=notifications.ACCESS_REQUEST_ALLOWED_TO_USER.formatted(
-                dataset_id=access_request.dataset_id
+                dataset_id=access_request.dataset_id,
+                note_to_requester=note_to_requester,
             ),
         )
         log.info("Sent Access Request Allowed notification to data requester")
@@ -199,11 +209,21 @@ class Orchestrator(OrchestratorPort):
                 text interpolation.
         """
         # Send a notification to the data requester
+        note_to_requester = (
+            (
+                "\nThe Data Steward has also included the following note:\n"
+                + access_request.note_to_requester
+            )
+            if access_request.note_to_requester
+            else ""
+        )
+
         await self._notification_emitter.notify(
             email=user.email,
             full_name=user.name,
             notification=notifications.ACCESS_REQUEST_DENIED_TO_USER.formatted(
-                dataset_id=access_request.dataset_id
+                dataset_id=access_request.dataset_id,
+                note_to_requester=note_to_requester,
             ),
         )
         log.info("Sent Access Request Denied notification to data requester")

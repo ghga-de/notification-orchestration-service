@@ -45,6 +45,7 @@ def access_request_payload(user_id: str, status: str = "pending") -> dict[str, A
         dac_alias="Some DAC",
         status=status,
         request_text="Please grant me access to this data.",
+        note_to_requester="Thank you",
         access_starts=start,
         access_ends=end,
     ).model_dump()
@@ -79,7 +80,10 @@ def iva_state_payload(user_id: str, state: event_schemas.IvaState) -> dict[str, 
         ),
         (  # Test access request allowed
             notifications.ACCESS_REQUEST_ALLOWED_TO_USER,
-            {"dataset_id": DATASET_ID},
+            {
+                "dataset_id": DATASET_ID,
+                "note_to_requester": "\nThe Data Steward has also included the following note:\nThank you",
+            },
             notifications.ACCESS_REQUEST_ALLOWED_TO_DS,
             {
                 "full_user_name": TEST_USER.name,
@@ -89,7 +93,10 @@ def iva_state_payload(user_id: str, state: event_schemas.IvaState) -> dict[str, 
         ),
         (  # Test access request denied
             notifications.ACCESS_REQUEST_DENIED_TO_USER,
-            {"dataset_id": DATASET_ID},
+            {
+                "dataset_id": DATASET_ID,
+                "note_to_requester": "\nThe Data Steward has also included the following note:\nThank you",
+            },
             notifications.ACCESS_REQUEST_DENIED_TO_DS,
             {
                 "full_user_name": TEST_USER.name,
