@@ -68,7 +68,13 @@ You should be contacted by one of our Data Stewards within the next three workin
 ACCESS_REQUEST_CREATED_TO_DS = Notification(
     "A data download access request has been created",
     """
-{full_user_name} requested to download the dataset {dataset_id}.
+{full_user_name} requested to download the following dataset:
+Dataset ID: {dataset_id}
+Title: {dataset_title}
+DAC: {dac_alias}
+
+Full message from requester:
+{request_text}
 
 The specified contact email address is: {email}
 """,

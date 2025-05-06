@@ -96,10 +96,13 @@ class Orchestrator(OrchestratorPort):
             log.error(error, extra=extra)
             raise error from err
 
-        await handler(user=user, dataset_id=dataset_id)
+        await handler(user=user, access_request=access_request)
 
     async def _access_request_created(
-        self, *, user: event_schemas.User, dataset_id: str
+        self,
+        *,
+        user: event_schemas.User,
+        access_request: event_schemas.AccessRequestDetails,
     ):
         """Processes an Access Request Created event.
 
@@ -118,7 +121,7 @@ class Orchestrator(OrchestratorPort):
             email=user.email,
             full_name=user.name,
             notification=notifications.ACCESS_REQUEST_CREATED_TO_USER.formatted(
-                dataset_id=dataset_id
+                dataset_id=access_request.dataset_id
             ),
         )
         log.info("Sent Access Request Created notification to data requester")
@@ -128,13 +131,21 @@ class Orchestrator(OrchestratorPort):
             email=self._config.central_data_stewardship_email,
             full_name=DATA_STEWARD_NAME,
             notification=notifications.ACCESS_REQUEST_CREATED_TO_DS.formatted(
-                full_user_name=user.name, email=user.email, dataset_id=dataset_id
+                full_user_name=user.name,
+                email=user.email,
+                dataset_id=access_request.dataset_id,
+                dataset_title=access_request.dataset_title,
+                dac_alias=access_request.dac_alias,
+                request_text=access_request.request_text,
             ),
         )
         log.info("Sent Access Request Created notification to data steward")
 
     async def _access_request_allowed(
-        self, *, user: event_schemas.User, dataset_id: str
+        self,
+        *,
+        user: event_schemas.User,
+        access_request: event_schemas.AccessRequestDetails,
     ):
         """Process an Access Request Allowed event.
 
@@ -154,7 +165,7 @@ class Orchestrator(OrchestratorPort):
             email=user.email,
             full_name=user.name,
             notification=notifications.ACCESS_REQUEST_ALLOWED_TO_USER.formatted(
-                dataset_id=dataset_id
+                dataset_id=access_request.dataset_id
             ),
         )
         log.info("Sent Access Request Allowed notification to data requester")
@@ -164,13 +175,16 @@ class Orchestrator(OrchestratorPort):
             email=self._config.central_data_stewardship_email,
             full_name=DATA_STEWARD_NAME,
             notification=notifications.ACCESS_REQUEST_ALLOWED_TO_DS.formatted(
-                full_user_name=user.name, dataset_id=dataset_id
+                full_user_name=user.name, dataset_id=access_request.dataset_id
             ),
         )
         log.info("Sent Access Request Allowed notification to data steward")
 
     async def _access_request_denied(
-        self, *, user: event_schemas.User, dataset_id: str
+        self,
+        *,
+        user: event_schemas.User,
+        access_request: event_schemas.AccessRequestDetails,
     ):
         """Process an Access Request Denied event.
 
@@ -189,7 +203,7 @@ class Orchestrator(OrchestratorPort):
             email=user.email,
             full_name=user.name,
             notification=notifications.ACCESS_REQUEST_DENIED_TO_USER.formatted(
-                dataset_id=dataset_id
+                dataset_id=access_request.dataset_id
             ),
         )
         log.info("Sent Access Request Denied notification to data requester")
@@ -199,7 +213,7 @@ class Orchestrator(OrchestratorPort):
             email=self._config.central_data_stewardship_email,
             full_name=DATA_STEWARD_NAME,
             notification=notifications.ACCESS_REQUEST_DENIED_TO_DS.formatted(
-                full_user_name=user.name, dataset_id=dataset_id
+                full_user_name=user.name, dataset_id=access_request.dataset_id
             ),
         )
         log.info("Sent Access Request Denied notification to data steward")
