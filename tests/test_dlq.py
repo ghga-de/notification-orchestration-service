@@ -60,7 +60,7 @@ async def test_combined_subscriber_types(joint_fixture: JointFixture):
     await joint_fixture.kafka.publish_event(
         payload=payload,
         type_=config.access_request_allowed_type,
-        topic=f"{config.service_name}-retry",
+        topic=f"retry-{config.service_name}",
         key="test",
         headers={"original_topic": config.access_request_topic},
     )
@@ -69,7 +69,7 @@ async def test_combined_subscriber_types(joint_fixture: JointFixture):
     await joint_fixture.kafka.publish_event(
         payload=TEST_USER.model_dump(),
         type_="upserted",
-        topic=f"{config.service_name}-retry",
+        topic=f"retry-{config.service_name}",
         key=TEST_USER.user_id,
         headers={"original_topic": config.user_topic},
     )
