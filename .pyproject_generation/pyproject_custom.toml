@@ -1,11 +1,11 @@
 [project]
 name = "nos"
-version = "5.0.0"
+version = "5.0.1"
 description = "The Notification Orchestration Service controls the creation of notification events."
 dependencies = [
     "typer >= 0.9.0",
     "ghga-event-schemas >= 4.1.0, <5",
-    "hexkit[akafka,mongodb] >= 5.0",
+    "hexkit[akafka,mongodb] >= 5.1",
     "pydantic[email]>=2, <3"
 ]
 
