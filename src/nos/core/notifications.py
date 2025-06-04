@@ -97,7 +97,7 @@ For help, please see the guide at https://docs.ghga.de/user_stories/accessing_da
 )
 
 ACCESS_REQUEST_ALLOWED_TO_DS = Notification(
-    "{dataset_id} - Data download access has been allowed",
+    "{dataset_id} - Access Request for {full_user_name} has been approved - GHGA Helpdesk Ticket {ticket_id}",
     """
 The request by {full_user_name} to download the dataset
 {dataset_id} has been approved and access has been granted.
@@ -116,7 +116,7 @@ about this decision.
 )
 
 ACCESS_REQUEST_DENIED_TO_DS = Notification(
-    "{dataset_id} - Data download access has been rejected",
+    "{dataset_id} - Access Request for {full_user_name} has been rejected - GHGA Helpdesk Ticket {ticket_id}",
     """
 The request by {full_user_name} to download the dataset
 {dataset_id} has been rejected and access has not been granted.

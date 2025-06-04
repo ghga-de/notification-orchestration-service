@@ -186,7 +186,9 @@ class Orchestrator(OrchestratorPort):
             email=self._config.central_data_stewardship_email,
             full_name=DATA_STEWARD_NAME,
             notification=notifications.ACCESS_REQUEST_ALLOWED_TO_DS.formatted(
-                full_user_name=user.name, dataset_id=access_request.dataset_id
+                full_user_name=user.name,
+                dataset_id=access_request.dataset_id,
+                ticket_id=f"#{access_request.ticket_id}" or "Missing",
             ),
         )
         log.info("Sent Access Request Allowed notification to data steward")
@@ -234,7 +236,9 @@ class Orchestrator(OrchestratorPort):
             email=self._config.central_data_stewardship_email,
             full_name=DATA_STEWARD_NAME,
             notification=notifications.ACCESS_REQUEST_DENIED_TO_DS.formatted(
-                full_user_name=user.name, dataset_id=access_request.dataset_id
+                full_user_name=user.name,
+                dataset_id=access_request.dataset_id,
+                ticket_id=f"#{access_request.ticket_id}" or "Missing",
             ),
         )
         log.info("Sent Access Request Denied notification to data steward")

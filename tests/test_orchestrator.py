@@ -49,6 +49,7 @@ def access_request_payload(user_id: str, status: str = "pending") -> dict[str, A
         note_to_requester="Thank you",
         access_starts=start,
         access_ends=end,
+        ticket_id="123456",
     ).model_dump()
 
 
@@ -90,6 +91,7 @@ def iva_state_payload(user_id: str, state: event_schemas.IvaState) -> dict[str, 
             {
                 "full_user_name": TEST_USER.name,
                 "dataset_id": DATASET_ID,
+                "ticket_id": "#123456",
             },
             "allowed",
         ),
@@ -103,6 +105,7 @@ def iva_state_payload(user_id: str, state: event_schemas.IvaState) -> dict[str, 
             {
                 "full_user_name": TEST_USER.name,
                 "dataset_id": DATASET_ID,
+                "ticket_id": "#123456",
             },
             "denied",
         ),
