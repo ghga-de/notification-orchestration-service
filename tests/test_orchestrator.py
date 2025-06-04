@@ -125,14 +125,14 @@ async def test_access_request(
 
     user_notification = event_schemas.Notification(
         recipient_email=test_user.email,
-        subject=user_notification_content.subject,
+        subject=user_notification_content.subject.format(**user_kwargs),
         recipient_name=test_user.name,
         plaintext_body=user_notification_content.text.format(**user_kwargs),
     )
 
     data_steward_notification = event_schemas.Notification(
         recipient_email=joint_fixture.config.central_data_stewardship_email,
-        subject=ds_notification_content.subject,
+        subject=ds_notification_content.subject.format(**ds_kwargs),
         recipient_name="Data Steward",
         plaintext_body=ds_notification_content.text.format(**ds_kwargs),
     )
