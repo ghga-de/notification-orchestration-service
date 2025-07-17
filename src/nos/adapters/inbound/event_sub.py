@@ -28,6 +28,7 @@ from ghga_event_schemas.validation import get_validated_payload
 from hexkit.custom_types import Ascii, JsonObject
 from hexkit.protocols.daosub import DaoSubscriberProtocol
 from hexkit.protocols.eventsub import EventSubscriberProtocol
+from pydantic import UUID4
 
 from nos.ports.inbound.orchestrator import OrchestratorPort
 
@@ -72,7 +73,13 @@ class EventSubTranslator(EventSubscriberProtocol):
         )
 
     async def _consume_validated(
-        self, *, payload: JsonObject, type_: Ascii, topic: Ascii, key: Ascii
+        self,
+        *,
+        payload: JsonObject,
+        type_: Ascii,
+        topic: Ascii,
+        key: Ascii,
+        event_id: UUID4,
     ) -> None:
         """Consumes an event"""
         match type_:
