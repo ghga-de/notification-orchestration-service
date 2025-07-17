@@ -82,6 +82,10 @@ class EventSubTranslator(EventSubscriberProtocol):
         event_id: UUID4,
     ) -> None:
         """Consumes an event"""
+        # TODO: Implement event_id check somewhere. Since it needs a DAO, the core should
+        # probably handle it.
+        # TODO: Create event ID DAO
+        # TODO: Add event ID DAO to the orchestrator
         match type_:
             case self._config.iva_state_changed_type:
                 if key.startswith("all-"):
