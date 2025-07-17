@@ -30,7 +30,11 @@ from nos.adapters.inbound.event_sub import (
     EventSubTranslator,
     UserOutboxTranslator,
 )
-from nos.adapters.outbound.dao import get_access_request_dao, get_user_dao
+from nos.adapters.outbound.dao import (
+    get_access_request_dao,
+    get_event_id_dao,
+    get_user_dao,
+)
 from nos.adapters.outbound.event_pub import NotificationEmitter
 from nos.config import Config
 from nos.core.orchestrator import Orchestrator
@@ -79,12 +83,17 @@ async def prepare_event_subscriber(
     By default, the core dependencies are automatically prepared but you can also
     provide them using the override parameter.
     """
-    async with prepare_core_with_override(
-        config=config, core_override=core_override
-    ) as orchestrator:
+    async with (
+        prepare_core_with_override(
+            config=config, core_override=core_override
+        ) as orchestrator,
+        MongoDbDaoFactory.construct(config=config) as dao_factory,
+    ):
+        event_id_dao = await get_event_id_dao(dao_factory=dao_factory)
         event_sub_translator = EventSubTranslator(
             orchestrator=orchestrator,
             config=config,
+            event_id_dao=event_id_dao,
         )
         access_request_outbox_translator = AccessRequestOutboxTranslator(
             config=config,

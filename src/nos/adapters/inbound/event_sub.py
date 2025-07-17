@@ -15,6 +15,8 @@
 #
 """Event subscriber definition."""
 
+import logging
+from contextlib import suppress
 from uuid import UUID
 
 from ghga_event_schemas import pydantic_ as event_schemas
@@ -30,7 +32,9 @@ from hexkit.protocols.daosub import DaoSubscriberProtocol
 from hexkit.protocols.eventsub import EventSubscriberProtocol
 from pydantic import UUID4
 
+from nos.models import EventId
 from nos.ports.inbound.orchestrator import OrchestratorPort
+from nos.ports.outbound.dao import EventIdDaoPort, ResourceNotFoundError
 
 
 class EventSubTranslatorConfig(
@@ -39,11 +43,18 @@ class EventSubTranslatorConfig(
     """Config for the event subscriber"""
 
 
+log = logging.getLogger(__name__)
+
+
 class EventSubTranslator(EventSubscriberProtocol):
     """A translator that can consume events"""
 
     def __init__(
-        self, *, config: EventSubTranslatorConfig, orchestrator: OrchestratorPort
+        self,
+        *,
+        config: EventSubTranslatorConfig,
+        orchestrator: OrchestratorPort,
+        event_id_dao: EventIdDaoPort,
     ):
         self.topics_of_interest = [config.iva_state_changed_topic, config.auth_topic]
         self.types_of_interest = [
@@ -52,6 +63,14 @@ class EventSubTranslator(EventSubscriberProtocol):
         ]
         self._config = config
         self._orchestrator = orchestrator
+        self._event_id_dao = event_id_dao
+
+    async def _have_we_seen_this_event(self, *, event_id: UUID4) -> bool:
+        """Check if we have already processed this event."""
+        with suppress(ResourceNotFoundError):
+            await self._event_id_dao.get_by_id(event_id)
+            return True
+        return False
 
     async def _handle_iva_state_change(self, payload: JsonObject) -> None:
         """Send notifications for IVA state changes."""
@@ -82,18 +101,32 @@ class EventSubTranslator(EventSubscriberProtocol):
         event_id: UUID4,
     ) -> None:
         """Consumes an event"""
-        # TODO: Implement event_id check somewhere. Since it needs a DAO, the core should
-        # probably handle it.
-        # TODO: Create event ID DAO
-        # TODO: Add event ID DAO to the orchestrator
-        match type_:
-            case self._config.iva_state_changed_type:
-                if key.startswith("all-"):
-                    await self._handle_all_ivas_reset(payload=payload)
-                else:
-                    await self._handle_iva_state_change(payload=payload)
-            case self._config.second_factor_recreated_type:
-                await self._handle_second_factor_recreated(payload=payload)
+        if not await self._have_we_seen_this_event(event_id=event_id):
+            try:
+                # Process the event based on its type
+                match type_:
+                    case self._config.iva_state_changed_type:
+                        if key.startswith("all-"):
+                            await self._handle_all_ivas_reset(payload=payload)
+                        else:
+                            await self._handle_iva_state_change(payload=payload)
+                    case self._config.second_factor_recreated_type:
+                        await self._handle_second_factor_recreated(payload=payload)
+
+                # If processing is successful, insert the event ID into the database
+                await self._event_id_dao.insert(EventId(event_id=event_id))
+                log.debug("Inserted event ID %s into the database.", event_id)
+            except Exception:
+                # If an error occurs, we do not store the event ID, log and re-raise
+                log.info(
+                    "Didn't store event ID %s due to error in processing.", event_id
+                )
+                raise
+        else:
+            log.debug(
+                "Event ID %s has already been processed, skipping further handling.",
+                event_id,
+            )
 
 
 class OutboxSubTranslatorConfig(UserEventsConfig, AccessRequestEventsConfig):
