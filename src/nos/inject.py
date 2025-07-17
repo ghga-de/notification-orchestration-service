@@ -25,16 +25,16 @@ from hexkit.providers.akafka import (
 )
 from hexkit.providers.mongodb import MongoDbDaoFactory
 
-from nos.config import Config
-from nos.core.orchestrator import Orchestrator
-from nos.ports.inbound.orchestrator import OrchestratorPort
-from nos.translators.inbound.event_sub import (
+from nos.adapters.inbound.event_sub import (
     AccessRequestOutboxTranslator,
     EventSubTranslator,
     UserOutboxTranslator,
 )
-from nos.translators.outbound.dao import get_access_request_dao, get_user_dao
-from nos.translators.outbound.event_pub import NotificationEmitter
+from nos.adapters.outbound.dao import get_access_request_dao, get_user_dao
+from nos.adapters.outbound.event_pub import NotificationEmitter
+from nos.config import Config
+from nos.core.orchestrator import Orchestrator
+from nos.ports.inbound.orchestrator import OrchestratorPort
 
 
 @asynccontextmanager
