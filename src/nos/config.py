@@ -19,7 +19,7 @@ from hexkit.config import config_from_yaml
 from hexkit.log import LoggingConfig
 from hexkit.opentelemetry import OpenTelemetryConfig
 from hexkit.providers.akafka import KafkaConfig
-from hexkit.providers.mongodb import MongoDbConfig
+from hexkit.providers.mongodb.migrations import MigrationConfig
 from pydantic import Field
 
 from nos.adapters.inbound.event_sub import (
@@ -38,7 +38,7 @@ class Config(
     EventSubTranslatorConfig,
     OutboxSubTranslatorConfig,
     NotificationEmitterConfig,
-    MongoDbConfig,
+    MigrationConfig,
     OpenTelemetryConfig,
 ):
     """Config parameters and their defaults."""
