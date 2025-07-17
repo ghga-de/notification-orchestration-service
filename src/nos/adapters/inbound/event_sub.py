@@ -15,6 +15,8 @@
 #
 """Event subscriber definition."""
 
+from uuid import UUID
+
 from ghga_event_schemas import pydantic_ as event_schemas
 from ghga_event_schemas.configs import UserEventsConfig
 from ghga_event_schemas.configs.stateful import AccessRequestEventsConfig
@@ -105,13 +107,12 @@ class UserOutboxTranslator(DaoSubscriberProtocol[event_schemas.User]):
 
     async def changed(self, resource_id: str, update: event_schemas.User) -> None:
         """Consume change event (created or updated) for user data."""
-        await self._orchestrator.upsert_user_data(
-            resource_id=resource_id, update=update
-        )
+        await self._orchestrator.upsert_user_data(update=update)
 
     async def deleted(self, resource_id: str) -> None:
         """Consume event indicating the deletion of a user."""
-        await self._orchestrator.delete_user_data(resource_id=resource_id)
+        user_id = UUID(resource_id)  # this ID is canonically a UUID4
+        await self._orchestrator.delete_user_data(user_id=user_id)
 
 
 class AccessRequestOutboxTranslator(
@@ -140,4 +141,7 @@ class AccessRequestOutboxTranslator(
 
     async def deleted(self, resource_id: str) -> None:
         """Consume event indicating the deletion of a user."""
-        await self._orchestrator.delete_access_request(resource_id=resource_id)
+        access_request_id = UUID(resource_id)  # this ID is canonically a UUID4
+        await self._orchestrator.delete_access_request(
+            access_request_id=access_request_id
+        )
