@@ -17,6 +17,7 @@
 
 from hexkit.config import config_from_yaml
 from hexkit.log import LoggingConfig
+from hexkit.opentelemetry import OpenTelemetryConfig
 from hexkit.providers.akafka import KafkaConfig
 from hexkit.providers.mongodb import MongoDbConfig
 from pydantic import Field
@@ -38,6 +39,7 @@ class Config(
     OutboxSubTranslatorConfig,
     NotificationEmitterConfig,
     MongoDbConfig,
+    OpenTelemetryConfig,
 ):
     """Config parameters and their defaults."""
 

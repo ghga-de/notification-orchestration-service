@@ -2,6 +2,7 @@ access_request_topic: access_request_events
 auth_topic: auth
 central_data_stewardship_email: test@test.abc
 db_name: nos
+enable_opentelemetry: false
 generate_correlation_id: true
 helpdesk_email: test@test.def
 iva_state_changed_topic: ivas
@@ -26,6 +27,9 @@ mongo_dsn: '**********'
 mongo_timeout: null
 notification_topic: notification_events
 notification_type: notification
+otel_exporter_endpoint: http://localhost:4318/
+otel_exporter_protocol: http/protobuf
+otel_trace_sampling_rate: 1.0
 second_factor_recreated_type: second_factor_recreated
 service_instance_id: '1'
 service_name: nos

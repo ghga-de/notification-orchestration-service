@@ -13,3 +13,4 @@ user_topic: users
 auth_topic: auth
 second_factor_recreated_type: second_factor_recreated
 kafka_enable_dlq: True
+otel_exporter_endpoint: http://localhost:4318
