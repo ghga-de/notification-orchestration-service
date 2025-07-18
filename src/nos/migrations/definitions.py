@@ -36,10 +36,10 @@ class V2Migration(MigrationDefinition, Reversible):
     async def apply(self):
         """Perform the migration."""
         convert_access_requests = convert_uuids_and_datetimes_v6(
-            uuid_fields=["id", "user_id"], date_fields=["access_starts", "access_ends"]
+            uuid_fields=["_id", "user_id"], date_fields=["access_starts", "access_ends"]
         )
 
-        convert_users = convert_uuids_and_datetimes_v6(uuid_fields=["user_id"])
+        convert_users = convert_uuids_and_datetimes_v6(uuid_fields=["_id"])
 
         async with self.auto_finalize(
             coll_names=["accessRequests", "users"], copy_indexes=True
@@ -62,7 +62,7 @@ class V2Migration(MigrationDefinition, Reversible):
 
         async def revert_access_requests(doc: Document) -> Document:
             """Convert Access Request documents back to string UUIDs and isoformat datetimes."""
-            for field in ["id", "user_id"]:
+            for field in ["_id", "user_id"]:
                 doc[field] = str(doc[field])
             for field in ["access_starts", "access_ends"]:
                 doc[field] = doc[field].isoformat()
@@ -70,21 +70,18 @@ class V2Migration(MigrationDefinition, Reversible):
 
         async def revert_users(doc: Document) -> Document:
             """Convert User documents back to string UUIDs."""
-            doc["user_id"] = str(doc["user_id"])
+            doc["_id"] = str(doc["_id"])
             return doc
 
         async with self.auto_finalize(
             coll_names=["accessRequests", "users"], copy_indexes=True
         ):
+            # Don't provide validation models here
             await self.migrate_docs_in_collection(
                 coll_name="accessRequests",
                 change_function=revert_access_requests,
-                validation_model=AccessRequestDetails,
-                id_field="id",
             )
             await self.migrate_docs_in_collection(
                 coll_name="users",
                 change_function=revert_users,
-                validation_model=User,
-                id_field="user_id",
             )
