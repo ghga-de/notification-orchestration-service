@@ -27,7 +27,7 @@ from pydantic import UUID4
 from nos.core import notifications
 from tests.conftest import TEST_USER
 from tests.fixtures.joint import JointFixture
-from tests.fixtures.utils import DATASET_ID, access_request_payload
+from tests.fixtures.utils import DATASET_ID, make_access_request
 
 pytestmark = pytest.mark.asyncio()
 
@@ -133,7 +133,7 @@ async def test_access_request(
     ]
 
     # Create the kafka event that would be published by the access request service
-    payload = access_request_payload(test_user.user_id, status)
+    payload = make_access_request(test_user.user_id, status).model_dump()
     await joint_fixture.kafka.publish_event(
         payload=payload,
         type_="upserted",
@@ -179,7 +179,7 @@ async def test_access_request_no_ticket_id(
     allowed/denied notifications, not the created notification.
     """
     # Create an access request payload and clear out the ticket
-    access_request = access_request_payload(TEST_USER.user_id, status=status)
+    access_request = make_access_request(TEST_USER.user_id, status=status).model_dump()
     access_request["ticket_id"] = ""
 
     # Publish the access request event
@@ -223,7 +223,7 @@ async def test_missing_user_id_access_requests(
     """Test for error handling in case of invalid user id, specifically for the access
     request events.
     """
-    payload = access_request_payload(uuid4())
+    payload = make_access_request(uuid4()).model_dump()
     await joint_fixture.kafka.publish_event(
         payload=payload,
         type_="upserted",

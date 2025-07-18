@@ -17,25 +17,25 @@
 
 from datetime import timedelta
 from pathlib import Path
-from typing import Any
-from uuid import UUID
+from uuid import uuid4
 
-from ghga_event_schemas import pydantic_ as event_schemas
-from ghga_service_commons.utils.utc_dates import now_as_utc
+from ghga_event_schemas.pydantic_ import AccessRequestDetails
+from hexkit.utils import now_utc_ms_prec
 from pydantic import UUID4
 
 BASE_DIR = Path(__file__).parent.resolve()
 
-STATIC_ACCESS_REQUEST_ID = UUID("5a927649-087f-4c4c-90f7-2ee01fa347a7")
 DATASET_ID = "dataset1"
 
 
-def access_request_payload(user_id: UUID4, status: str = "pending") -> dict[str, Any]:
+def make_access_request(
+    user_id: UUID4, status: str = "pending"
+) -> AccessRequestDetails:
     """Succinctly create the payload for an access request event."""
-    start = now_as_utc()
+    start = now_utc_ms_prec()
     end = start + timedelta(days=180)
-    return event_schemas.AccessRequestDetails(
-        id=STATIC_ACCESS_REQUEST_ID,
+    return AccessRequestDetails(
+        id=uuid4(),
         user_id=user_id,
         dataset_id=DATASET_ID,
         dataset_title="A Great Dataset",
@@ -48,4 +48,4 @@ def access_request_payload(user_id: UUID4, status: str = "pending") -> dict[str,
         access_starts=start,
         access_ends=end,
         ticket_id="123456",
-    ).model_dump()
+    )
