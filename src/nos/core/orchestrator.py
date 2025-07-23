@@ -407,9 +407,7 @@ class Orchestrator(OrchestratorPort):
             unexpected_iva_state_error = self.UnexpectedIvaState(state=user_iva.state)
             log.error(
                 unexpected_iva_state_error,
-                extra={
-                    "user_id": user_iva.user_id,
-                },
+                extra={"user_id": user_iva.user_id},
             )
             raise unexpected_iva_state_error
 
