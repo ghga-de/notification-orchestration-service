@@ -101,32 +101,30 @@ class EventSubTranslator(EventSubscriberProtocol):
         event_id: UUID4,
     ) -> None:
         """Consumes an event"""
-        if not await self._have_we_seen_this_event(event_id=event_id):
-            try:
-                # Process the event based on its type
-                match type_:
-                    case self._config.iva_state_changed_type:
-                        if key.startswith("all-"):
-                            await self._handle_all_ivas_reset(payload=payload)
-                        else:
-                            await self._handle_iva_state_change(payload=payload)
-                    case self._config.second_factor_recreated_type:
-                        await self._handle_second_factor_recreated(payload=payload)
-
-                # If processing is successful, insert the event ID into the database
-                await self._event_id_dao.insert(EventId(event_id=event_id))
-                log.debug("Inserted event ID %s into the database.", event_id)
-            except Exception:
-                # If an error occurs, we do not store the event ID, log and re-raise
-                log.info(
-                    "Didn't store event ID %s due to error in processing.", event_id
-                )
-                raise
-        else:
+        if await self._have_we_seen_this_event(event_id=event_id):
             log.debug(
                 "Event ID %s has already been processed, skipping further handling.",
                 event_id,
             )
+            return
+        try:
+            # Process the event based on its type
+            match type_:
+                case self._config.iva_state_changed_type:
+                    if key.startswith("all-"):
+                        await self._handle_all_ivas_reset(payload=payload)
+                    else:
+                        await self._handle_iva_state_change(payload=payload)
+                case self._config.second_factor_recreated_type:
+                    await self._handle_second_factor_recreated(payload=payload)
+
+            # If processing is successful, insert the event ID into the database
+            await self._event_id_dao.insert(EventId(event_id=event_id))
+            log.debug("Inserted event ID %s into the database.", event_id)
+        except Exception:
+            # If an error occurs, we do not store the event ID, log and re-raise
+            log.info("Didn't store event ID %s due to error in processing.", event_id)
+            raise
 
 
 class OutboxSubTranslatorConfig(UserEventsConfig, AccessRequestEventsConfig):
