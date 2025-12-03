@@ -84,12 +84,20 @@
       "title": "Notification Topic",
       "type": "string"
     },
-    "notification_type": {
-      "description": "The type used for notification events.",
+    "email_notification_type": {
+      "description": "The type used for email notification events.",
       "examples": [
-        "notification"
+        "email_notification"
       ],
-      "title": "Notification Type",
+      "title": "Email Notification Type",
+      "type": "string"
+    },
+    "sms_notification_type": {
+      "description": "The type used for SMS notification events.",
+      "examples": [
+        "sms_notification"
+      ],
+      "title": "Sms Notification Type",
       "type": "string"
     },
     "access_request_topic": {
@@ -349,7 +357,8 @@
     "db_version_collection",
     "migration_wait_sec",
     "notification_topic",
-    "notification_type",
+    "email_notification_type",
+    "sms_notification_type",
     "access_request_topic",
     "auth_topic",
     "second_factor_recreated_type",

@@ -3,6 +3,7 @@ auth_topic: auth
 central_data_stewardship_email: test@test.abc
 db_name: nos
 db_version_collection: nosDbVersions
+email_notification_type: email_notification
 generate_correlation_id: true
 helpdesk_email: test@test.def
 iva_state_changed_topic: ivas
@@ -28,9 +29,8 @@ migration_wait_sec: 10
 mongo_dsn: '**********'
 mongo_timeout: null
 notification_topic: notification_events
-email_notification_type: email_notification
-sms_notification_type: sms_notification
 second_factor_recreated_type: second_factor_recreated
 service_instance_id: '1'
 service_name: nos
+sms_notification_type: sms_notification
 user_topic: users
