@@ -105,14 +105,14 @@ async def test_access_request(
     """
     test_user = await joint_fixture.user_dao.get_by_id(TEST_USER.user_id)
 
-    user_notification = event_schemas.Notification(
+    user_notification = event_schemas.EmailNotification(
         recipient_email=test_user.email,
         subject=user_notification_content.subject.format(**user_kwargs),
         recipient_name=test_user.name,
         plaintext_body=user_notification_content.text.format(**user_kwargs),
     )
 
-    data_steward_notification = event_schemas.Notification(
+    data_steward_notification = event_schemas.EmailNotification(
         recipient_email=joint_fixture.config.central_data_stewardship_email,
         subject=ds_notification_content.subject.format(**ds_kwargs),
         recipient_name="Data Steward",
@@ -122,12 +122,12 @@ async def test_access_request(
     expected = [
         ExpectedEvent(
             payload=user_notification.model_dump(),
-            type_=joint_fixture.config.notification_type,
+            type_=joint_fixture.config.email_notification_type,
             key=test_user.email,
         ),
         ExpectedEvent(
             payload=data_steward_notification.model_dump(),
-            type_=joint_fixture.config.notification_type,
+            type_=joint_fixture.config.email_notification_type,
             key=joint_fixture.config.central_data_stewardship_email,
         ),
     ]
@@ -197,7 +197,7 @@ async def test_access_request_no_ticket_id(
     }
 
     # Define the event that should be published by the NOS when the trigger is consumed
-    expected_notification = event_schemas.Notification(
+    expected_notification = event_schemas.EmailNotification(
         recipient_email=joint_fixture.config.central_data_stewardship_email,
         subject=ds_notification.subject.format(**ds_kwargs),
         recipient_name="Data Steward",
@@ -345,7 +345,7 @@ async def test_iva_state_change(
 
     # Build a notification payload for the user, if applicable
     user_notification = (
-        event_schemas.Notification(
+        event_schemas.EmailNotification(
             recipient_email=TEST_USER.email,
             subject=expected_user_notification.subject,
             recipient_name=TEST_USER.name,
@@ -359,7 +359,7 @@ async def test_iva_state_change(
 
     # Build a notification payload for the data steward, if applicable
     data_steward_notification = (
-        event_schemas.Notification(
+        event_schemas.EmailNotification(
             recipient_email=joint_fixture.config.central_data_stewardship_email,
             subject=expected_ds_notification.subject,
             recipient_name="Data Steward",
@@ -386,7 +386,7 @@ async def test_iva_state_change(
             expected_events.append(
                 ExpectedEvent(
                     payload=notification.model_dump(),
-                    type_=joint_fixture.config.notification_type,
+                    type_=joint_fixture.config.email_notification_type,
                 )
             )
 
@@ -418,7 +418,7 @@ async def test_all_ivas_reset(joint_fixture: JointFixture):
 
     # Define the event that should be published by the NOS when the trigger is consumed
     helpdesk_email = joint_fixture.config.helpdesk_email
-    expected_notification = event_schemas.Notification(
+    expected_notification = event_schemas.EmailNotification(
         recipient_email=TEST_USER.email,
         recipient_name=TEST_USER.name,
         subject="Contact Address Invalidation",
@@ -432,7 +432,7 @@ If you have any questions, please contact the GHGA Helpdesk: {helpdesk_email}
 
     expected_event = ExpectedEvent(
         payload=expected_notification.model_dump(),
-        type_=joint_fixture.config.notification_type,
+        type_=joint_fixture.config.email_notification_type,
     )
 
     # consume the event and verify that the expected event is published
@@ -463,7 +463,7 @@ async def test_second_factor_recreated_notification(joint_fixture: JointFixture)
         )
     )
 
-    expected_notification = event_schemas.Notification(
+    expected_notification = event_schemas.EmailNotification(
         recipient_email=TEST_USER.email,
         recipient_name=TEST_USER.name,
         subject=expected_notification_content.subject,
@@ -472,7 +472,7 @@ async def test_second_factor_recreated_notification(joint_fixture: JointFixture)
 
     expected_event = ExpectedEvent(
         payload=expected_notification.model_dump(),
-        type_=joint_fixture.config.notification_type,
+        type_=joint_fixture.config.email_notification_type,
     )
 
     # consume the event and verify that the expected event is published
