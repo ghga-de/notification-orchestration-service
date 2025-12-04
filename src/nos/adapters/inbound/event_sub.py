@@ -60,6 +60,7 @@ class EventSubTranslator(EventSubscriberProtocol):
         self.types_of_interest = [
             config.iva_state_changed_type,
             config.second_factor_recreated_type,
+            config.iva_send_code_type,
         ]
         self._config = config
         self._orchestrator = orchestrator
