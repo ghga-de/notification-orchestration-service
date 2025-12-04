@@ -536,8 +536,8 @@ class Orchestrator(OrchestratorPort):
     async def iva_send_code(
         self,
         *,
-        phone: str | None,
-        code: str = "N/A",
+        phone: str,
+        code: str,
     ):
         """Send notifications relaying that an IVA code has been requested.
 
@@ -545,14 +545,13 @@ class Orchestrator(OrchestratorPort):
 
         Another notification is sent to the data steward to inform them of the request.
         """
-        if phone:
-            await self._notification_emitter.sms_notify(
-                phone=phone,
-                notification=notifications.IVA_SEND_CODE_PHONE_TRANSMISSION.formatted(
-                    code=code,
-                ),
-            )
+        await self._notification_emitter.sms_notify(
+            phone=phone,
+            notification=notifications.IVA_SEND_CODE_PHONE_TRANSMISSION.formatted(
+                code=code,
+            ),
+        )
 
-            log.info(
-                "SMS delivery event for an IVA code has been created.",
-            )
+        log.info(
+            "SMS delivery event for an IVA code has been created.",
+        )
