@@ -180,6 +180,13 @@ The specified contact email address is: {email}.
 """,
 )
 
+IVA_SEND_CODE_PHONE_TRANSMISSION = Notification(
+    "Phone IVA Verification Code",
+    """
+Your verification code is: {code}
+""",
+)
+
 USER_REREGISTERED_TO_USER = Notification(
     "Account Details Changed",
     """

@@ -91,6 +91,21 @@ class EventSubTranslator(EventSubscriberProtocol):
             user_id=validated_payload.user_id
         )
 
+    async def _iva_send_code(self, payload: JsonObject) -> None:
+        """Send notifications for second factor recreation."""
+        validated_payload = get_validated_payload(payload, event_schemas.UserIvaCode)
+        match validated_payload.type:
+            case event_schemas.IvaType.PHONE:
+                await self._orchestrator.iva_send_code(
+                    phone=validated_payload.value,
+                    code=validated_payload.code,
+                )
+            case _:
+                log.warning(
+                    "Received IVA code event with unsupported type: %s",
+                    validated_payload.type,
+                )
+
     async def _consume_validated(
         self,
         *,
@@ -117,6 +132,8 @@ class EventSubTranslator(EventSubscriberProtocol):
                         await self._handle_iva_state_change(payload=payload)
                 case self._config.second_factor_recreated_type:
                     await self._handle_second_factor_recreated(payload=payload)
+                case self._config.iva_send_code_type:
+                    await self._iva_send_code(payload=payload)
 
             # If processing is successful, insert the event ID into the database
             await self._event_id_dao.insert(EventId(event_id=event_id))

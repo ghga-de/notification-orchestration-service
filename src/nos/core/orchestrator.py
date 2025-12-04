@@ -532,3 +532,27 @@ class Orchestrator(OrchestratorPort):
             "Sent Second Factor Recreated notification to user. Email address: %s",
             user.email,
         )
+
+    async def iva_send_code(
+        self,
+        *,
+        phone: str | None,
+        code: str = "N/A",
+    ):
+        """Send notifications relaying that an IVA code has been requested.
+
+        One notification is sent to the user to confirm that their request was received.
+
+        Another notification is sent to the data steward to inform them of the request.
+        """
+        if phone:
+            await self._notification_emitter.sms_notify(
+                phone=phone,
+                notification=notifications.IVA_SEND_CODE_PHONE_TRANSMISSION.formatted(
+                    code=code,
+                ),
+            )
+
+            log.info(
+                "SMS delivery event for an IVA code has been created.",
+            )
