@@ -505,3 +505,56 @@ async def test_iva_verified_event_sub(joint_fixture: JointFixture):
         await joint_fixture.event_subscriber.run(forever=False)
 
     assert not recorder.recorded_events, "IVA Verified event would be sent to DLQ!"
+
+
+async def test_send_code_via_sms(
+    joint_fixture: JointFixture,
+):
+    """Test that the IVA send code events are translated into the proper notification.
+
+    This does not check the wording or content of the notifications, only that the
+    correct notifications are generated for each send code event.
+    """
+    test_payload = {
+        "value": "+491234567890",
+        "code": "123456",
+        "type": event_schemas.IvaType.PHONE,
+        "user_id": str(TEST_USER.user_id),
+    }
+
+    # Prepare triggering event (the IVA send code event).
+    trigger_event = event_schemas.UserIvaCode(**test_payload)
+
+    # Publish the trigger event
+    await joint_fixture.kafka.publish_event(
+        payload=trigger_event.model_dump(),
+        type_=joint_fixture.config.iva_send_code_type,
+        topic=joint_fixture.config.iva_state_changed_topic,
+        key=test_payload["user_id"],
+    )
+
+    # Build a notification payload for the user
+    user_notification = event_schemas.SmsNotification(
+        phone=test_payload["value"],
+        text=notifications.IVA_SEND_CODE_PHONE_TRANSMISSION.text.format(
+            code=test_payload["code"]
+        ),
+    )
+
+    # Build the list of expected events
+    expected_events = []
+    for notification in [user_notification]:
+        if notification:
+            expected_events.append(
+                ExpectedEvent(
+                    payload=notification.model_dump(),
+                    type_=joint_fixture.config.sms_notification_type,
+                )
+            )
+
+    # Consume the event and verify that the expected events are published
+    async with joint_fixture.kafka.expect_events(
+        events=expected_events,
+        in_topic=joint_fixture.config.notification_topic,
+    ):
+        await joint_fixture.event_subscriber.run(forever=False)
