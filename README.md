@@ -177,11 +177,18 @@ The service requires the following configuration parameters:
   "ivas"
   ```
 
-- <a id="properties/iva_state_changed_type"></a>**`iva_state_changed_type`** *(string, required)*: The type to use for iva state changed events.
+- <a id="properties/iva_state_changed_type"></a>**`iva_state_changed_type`** *(string, required)*: The type to use for IVA state changed events.
 
   Examples:
   ```json
   "iva_state_changed"
+  ```
+
+- <a id="properties/iva_send_code_type"></a>**`iva_send_code_type`** *(string, required)*: The type to use for IVA send code events.
+
+  Examples:
+  ```json
+  "iva_send_code"
   ```
 
 - <a id="properties/service_name"></a>**`service_name`** *(string)*: The Notification Orchestration Service controls the creation of notification events. Default: `"nos"`.
