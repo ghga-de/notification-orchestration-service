@@ -542,16 +542,12 @@ async def test_send_code_via_sms(
     )
 
     # Build the list of expected events
-    expected_events = []
-    for notification in [user_notification]:
-        if notification:
-            expected_events.append(
-                ExpectedEvent(
-                    payload=notification.model_dump(),
-                    type_=joint_fixture.config.sms_notification_type,
-                )
-            )
-
+    expected_events = [
+        ExpectedEvent(
+            payload=notification.model_dump(),
+            type_=joint_fixture.config.sms_notification_type,
+        )
+    ]
     # Consume the event and verify that the expected events are published
     async with joint_fixture.kafka.expect_events(
         events=expected_events,
