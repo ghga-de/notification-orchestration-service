@@ -64,7 +64,7 @@ class NotificationEmitter(NotificationEmitterPort):
         )
 
     async def sms_notify(self, *, phone: str, notification: Notification) -> None:
-        """Send notification to the specified email address."""
+        """Send notification to the specified phone number."""
         payload: JsonObject = event_schemas.SmsNotification(
             phone=phone,
             text=notification.text,

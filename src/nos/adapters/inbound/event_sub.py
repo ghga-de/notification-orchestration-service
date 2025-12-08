@@ -93,11 +93,11 @@ class EventSubTranslator(EventSubscriberProtocol):
         )
 
     async def _iva_send_code(self, payload: JsonObject) -> None:
-        """Send notifications for second factor recreation."""
+        """Transmit codes for IVAs."""
         validated_payload = get_validated_payload(payload, event_schemas.UserIvaCode)
         match validated_payload.type:
             case event_schemas.IvaType.PHONE:
-                await self._orchestrator.iva_send_code(
+                await self._orchestrator.send_iva_sms_code(
                     phone=validated_payload.value,
                     code=validated_payload.code,
                 )

@@ -95,5 +95,5 @@ class OrchestratorPort(ABC):
         """Send a notification to the user that their second factor has been recreated."""
 
     @abstractmethod
-    async def iva_send_code(self, *, phone: str, code: str) -> None:
+    async def send_iva_sms_code(self, *, phone: str, code: str) -> None:
         """Send a sms notification to the user with the created IVA code."""
