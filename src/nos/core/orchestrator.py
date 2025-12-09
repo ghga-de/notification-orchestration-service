@@ -542,7 +542,7 @@ class Orchestrator(OrchestratorPort):
         """Transmit IVA verification code to the requesting user via sms."""
         await self._notification_emitter.sms_notify(
             phone=phone,
-            notification=notifications.IVA_SEND_CODE_PHONE_TRANSMISSION.formatted(
+            notification=notifications.IVA_SEND_CODE_TRANSMISSION.formatted(
                 code=code,
             ),
         )

@@ -536,7 +536,7 @@ async def test_send_code_via_sms(
     # Build a notification payload for the user
     user_notification = event_schemas.SmsNotification(
         phone=test_payload["value"],
-        text=notifications.IVA_SEND_CODE_PHONE_TRANSMISSION.text.format(
+        text=notifications.IVA_SEND_CODE_TRANSMISSION.text.format(
             code=test_payload["code"]
         ),
     )
@@ -544,7 +544,7 @@ async def test_send_code_via_sms(
     # Build the list of expected events
     expected_events = [
         ExpectedEvent(
-            payload=notification.model_dump(),
+            payload=user_notification.model_dump(),
             type_=joint_fixture.config.sms_notification_type,
         )
     ]

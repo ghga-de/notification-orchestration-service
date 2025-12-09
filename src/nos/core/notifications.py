@@ -180,8 +180,8 @@ The specified contact email address is: {email}.
 """,
 )
 
-IVA_SEND_CODE_PHONE_TRANSMISSION = Notification(
-    "Phone IVA Verification Code",
+IVA_SEND_CODE_TRANSMISSION = Notification(
+    "IVA Verification Code",
     """
 Your verification code is: {code}
 """,
