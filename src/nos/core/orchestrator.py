@@ -547,4 +547,6 @@ class Orchestrator(OrchestratorPort):
             ),
         )
 
-        log.info("IVA verification code transmission event has been created.")
+        log.info(
+            f"IVA verification code transmission event has been created. Four last digits of phone number: {phone[-4:]}."
+        )
