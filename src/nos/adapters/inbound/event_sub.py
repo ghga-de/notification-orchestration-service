@@ -98,6 +98,7 @@ class EventSubTranslator(EventSubscriberProtocol):
         match validated_payload.type:
             case event_schemas.IvaType.PHONE:
                 await self._orchestrator.send_iva_sms_code(
+                    user_id=validated_payload.user_id,
                     phone=validated_payload.value,
                     code=validated_payload.code,
                 )

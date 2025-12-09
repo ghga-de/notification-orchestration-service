@@ -536,10 +536,25 @@ class Orchestrator(OrchestratorPort):
     async def send_iva_sms_code(
         self,
         *,
+        user_id: UUID4,
         phone: str,
         code: str,
     ):
         """Transmit IVA verification code to the requesting user via sms."""
+        try:
+            await self._user_dao.get_by_id(user_id)
+        except ResourceNotFoundError:
+            error = self.MissingUserError(
+                user_id=user_id, notification_name="IVA Send Code"
+            )
+            log.warning(
+                error,
+                extra={
+                    "user_id": user_id,
+                    "notification_name": "IVA Send Code",
+                },
+            )
+
         await self._notification_emitter.sms_notify(
             phone=phone,
             notification=notifications.IVA_SEND_CODE_TRANSMISSION.formatted(
