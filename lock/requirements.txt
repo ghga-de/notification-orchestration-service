@@ -39,6 +39,12 @@ annotated-types==0.7.0 \
     # via
     #   -c lock/requirements-dev.txt
     #   pydantic
+anyio==4.12.0 \
+    --hash=sha256:73c693b567b0c55130c104d0b43a9baf3aa6a31fc6110116509f27bf75e21ec0 \
+    --hash=sha256:dad2376a628f98eeca4881fc56cd06affd18f659b17a747d3ff0307ced94b1bb
+    # via
+    #   -c lock/requirements-dev.txt
+    #   httpx
 async-timeout==5.0.1 \
     --hash=sha256:39e3809566ff85354557ec2398b55e096c8364bacac9405a7a1fa429e77fe76c \
     --hash=sha256:d9321a7a3d5a6a5e187e824d2fa0793ce379a202935782d555d6e9d2735677d3
@@ -52,6 +58,13 @@ attrs==25.4.0 \
     #   -c lock/requirements-dev.txt
     #   jsonschema
     #   referencing
+certifi==2025.11.12 \
+    --hash=sha256:97de8790030bbd5c2d96b7ec782fc2f7820ef8dba6db909ccf95449f2d062d4b \
+    --hash=sha256:d8ab5478f2ecd78af242878415affce761ca6bc54a22a27e026d7c25357c3316
+    # via
+    #   -c lock/requirements-dev.txt
+    #   httpcore
+    #   httpx
 click==8.3.1 \
     --hash=sha256:12ff4785d337a1bb490bb7e9c2b1ee5da3112e94a8622f26a6c77f5d2fc6842a \
     --hash=sha256:981153a64e25f12d547d3426c367a4857371575ee7ad18df2a6183ab0545b2a6
@@ -220,9 +233,27 @@ ghga-service-commons==6.0.2 \
     # via
     #   -c lock/requirements-dev.txt
     #   ghga-event-schemas
+h11==0.16.0 \
+    --hash=sha256:4e35b956cf45792e4caa5885e69fba00bdbc6ffafbfa020300e549b208ee5ff1 \
+    --hash=sha256:63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86
+    # via
+    #   -c lock/requirements-dev.txt
+    #   httpcore
 hexkit==7.2.1 \
     --hash=sha256:173b778892a628f50ebff5c7aa3b46071e9c13922c22b8ba4090abf1ab6a2376 \
     --hash=sha256:6e7b5e0b9eab587b670abd7e186c72239bfc6a9d9a83d9ef5310fadcd0bb8a17
+    # via
+    #   -c lock/requirements-dev.txt
+    #   nos (pyproject.toml)
+httpcore==1.0.9 \
+    --hash=sha256:2d400746a40668fc9dec9810239072b40b4484b640a8c38fd654a024c7a1bf55 \
+    --hash=sha256:6e34463af53fd2ab5d807f399a9b45ea31c3dfa2276f15a2c3f00afff6e176e8
+    # via
+    #   -c lock/requirements-dev.txt
+    #   httpx
+httpx==0.28.1 \
+    --hash=sha256:75e98c5f16b0f35b567856f597f06ff2270a374470a5c2392242528e3e3e42fc \
+    --hash=sha256:d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad
     # via
     #   -c lock/requirements-dev.txt
     #   nos (pyproject.toml)
@@ -231,7 +262,9 @@ idna==3.11 \
     --hash=sha256:795dafcc9c04ed0c1fb032c2aa73654d8e8c5023a7df64a53f39190ada629902
     # via
     #   -c lock/requirements-dev.txt
+    #   anyio
     #   email-validator
+    #   httpx
 importlib-metadata==8.7.0 \
     --hash=sha256:d13b81ad223b890aa16c5471f2ac3056cf76c5f10f82d6f9292f0b415f389000 \
     --hash=sha256:e5dd1551894c77868a30651cef00984d50e1002d06942a7101d34870c5f02afd
@@ -263,9 +296,9 @@ mdurl==0.1.2 \
     # via
     #   -c lock/requirements-dev.txt
     #   markdown-it-py
-opentelemetry-api==1.39.0 \
-    --hash=sha256:3c3b3ca5c5687b1b5b37e5c5027ff68eacea8675241b29f13110a8ffbb8f0459 \
-    --hash=sha256:6130644268c5ac6bdffaf660ce878f10906b3e789f7e2daa5e169b047a2933b9
+opentelemetry-api==1.39.1 \
+    --hash=sha256:2edd8463432a7f8443edce90972169b195e7d6a05500cd29e6d13898187c9950 \
+    --hash=sha256:fbde8c80e1b937a2c61f20347e91c0c18a1940cecf012d62e65a7caf08967c9c
     # via
     #   -c lock/requirements-dev.txt
     #   hexkit
