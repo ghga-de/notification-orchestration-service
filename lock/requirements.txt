@@ -263,9 +263,9 @@ mdurl==0.1.2 \
     # via
     #   -c lock/requirements-dev.txt
     #   markdown-it-py
-opentelemetry-api==1.39.0 \
-    --hash=sha256:3c3b3ca5c5687b1b5b37e5c5027ff68eacea8675241b29f13110a8ffbb8f0459 \
-    --hash=sha256:6130644268c5ac6bdffaf660ce878f10906b3e789f7e2daa5e169b047a2933b9
+opentelemetry-api==1.39.1 \
+    --hash=sha256:2edd8463432a7f8443edce90972169b195e7d6a05500cd29e6d13898187c9950 \
+    --hash=sha256:fbde8c80e1b937a2c61f20347e91c0c18a1940cecf012d62e65a7caf08967c9c
     # via
     #   -c lock/requirements-dev.txt
     #   hexkit
@@ -720,9 +720,9 @@ shellingham==1.5.4 \
     # via
     #   -c lock/requirements-dev.txt
     #   typer
-typer==0.20.0 \
-    --hash=sha256:1aaf6494031793e4876fb0bacfa6a912b551cf43c1e63c800df8b1a866720c37 \
-    --hash=sha256:5b463df6793ec1dca6213a3cf4c0f03bc6e322ac5e16e13ddd622a889489784a
+typer==0.20.1 \
+    --hash=sha256:4b3bde918a67c8e03d861aa02deca90a95bbac572e71b1b9be56ff49affdb5a8 \
+    --hash=sha256:68585eb1b01203689c4199bc440d6be616f0851e9f0eb41e4a778845c5a0fd5b
     # via
     #   -c lock/requirements-dev.txt
     #   nos (pyproject.toml)
