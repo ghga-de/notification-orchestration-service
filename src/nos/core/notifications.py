@@ -82,7 +82,7 @@ Full message from requester:
 
 The specified contact email address is: {email}
 
-Link to the Access request in the data portal:
+Link to the Access Request in the data portal:
 {request_url}
 """,
 )
