@@ -5,3 +5,6 @@
 
 # additional requirements can be listed here
 testcontainers[kafka]>=4.12,<4.13
+
+# no longer provided by the template, but used by the test suite
+logot>=1.5
