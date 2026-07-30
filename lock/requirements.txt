@@ -31,31 +31,31 @@ aiokafka==0.14.0 \
     --hash=sha256:e51d48110767f228a44ccfd6e41c5444644c55e01f73b0a021227f19803a3714 \
     --hash=sha256:f68e75acf03631ea046b00bc8cc9aca8e3eb89486468b884629586ae6f2c63bc
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   hexkit
 annotated-doc==0.0.5 \
     --hash=sha256:117bac03a25ede5df5440e855b32d556049ca169ead221505badf432fed4b101 \
     --hash=sha256:c7e58ce09192557605d8bbd92836d7e1d520ac9580096042c0bfd197efacf1bb
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   typer
 annotated-types==0.8.0 \
     --hash=sha256:13b2beaad985e05e2d6407ee4c4f35590b11f8d693a258a561055cac8f64cab7 \
     --hash=sha256:f072f4d804ea359e4eaf198b1af7a8b0943881a87f31bb764f8bf219bb9419e0
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   pydantic
 async-timeout==5.0.1 \
     --hash=sha256:39e3809566ff85354557ec2398b55e096c8364bacac9405a7a1fa429e77fe76c \
     --hash=sha256:d9321a7a3d5a6a5e187e824d2fa0793ce379a202935782d555d6e9d2735677d3
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   aiokafka
 attrs==26.1.0 \
     --hash=sha256:c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309 \
     --hash=sha256:d03ceb89cb322a8fd706d4fb91940737b6642aa36998fe130a9bc96c985eff32
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   jsonschema
     #   referencing
 cramjam==2.11.0 \
@@ -193,87 +193,87 @@ cramjam==2.11.0 \
     --hash=sha256:f6a32313a5fdbc4fc4fd681a1895d55ee4bf81275e88638b1643b54ecf850cbe \
     --hash=sha256:f8195006fdd0fc0a85b19df3d64a3ef8a240e483ae1dfc7ac6a4316019eb5df2
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   aiokafka
 dnspython==2.8.0 \
     --hash=sha256:01d9bbc4a2d76bf0db7c1f729812ded6d912bd318d3b1cf81d30c0f845dbf3af \
     --hash=sha256:181d3c6996452cb1189c4046c61599b84a5a86e099562ffde77d26984ff26d0f
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   email-validator
     #   pymongo
 email-validator==2.3.0 \
     --hash=sha256:80f13f623413e6b197ae73bb10bf4eb0908faf509ad8362c5edeb0be7fd450b4 \
     --hash=sha256:9fc05c37f2f6cf439ff414f8fc46d917929974a82244c20eb10231ba60c54426
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   pydantic
 ghga-event-schemas==12.0.0 \
     --hash=sha256:3eccaa70212eb3a91193d35564689aa6852b0086ff38ef85656e26c9e8b98397 \
     --hash=sha256:45471c0acceb04fed62fa439c8b02786cbe9a41f4ddde05b970feb8deb3c67d2
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   nos (pyproject.toml)
 ghga-service-commons==8.0.0 \
     --hash=sha256:ae54aa400d1f366d90d8c2c3d1ee94009e234d2ca654694f8ba9c15cfd98bf20 \
     --hash=sha256:d54515e2d509f70e345d8b5e2651de083fd958a50c4371a0857241753b4dc59f
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   ghga-event-schemas
-hexkit==8.6.0 \
-    --hash=sha256:fa27d6151e3a888ab401124a040bcb40ac3d0c69d63d14727f10795bf97947be \
-    --hash=sha256:faecfc22e3b9ccb9ad3015aae4345468c7c40d2a40f1b1af2a4b4e9c9b759ded
+hexkit==9.0.0 \
+    --hash=sha256:1377a5f34f70b7d395eb1395a732bc430265575a966eb5c0c7e81be95b89f222 \
+    --hash=sha256:eb0db74c4361694d76ef1bac50830390f9413c48a7abe2ac11ad821f58173620
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   nos (pyproject.toml)
 idna==3.18 \
     --hash=sha256:7f952cbe720b688055e3f87de14f5c3e5fdaa8bc3928985c4077ca689de849a2 \
     --hash=sha256:ffb385a7e039654cef1ab9ef32c6fafe283c0c0467bba1d9029738ce4a14a848
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   email-validator
 jsonschema==4.26.0 \
     --hash=sha256:0c26707e2efad8aa1bfc5b7ce170f3fccc2e4918ff85989ba9ffa9facb2be326 \
     --hash=sha256:d489f15263b8d200f8387e64b4c3a75f06629559fb73deb8fdfb525f2dab50ce
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   ghga-event-schemas
     #   hexkit
 jsonschema-specifications==2025.9.1 \
     --hash=sha256:98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe \
     --hash=sha256:b540987f239e745613c7a9176f3edb72b832a4ac465cf02712288397832b5e8d
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   jsonschema
 markdown-it-py==4.2.0 \
     --hash=sha256:04a21681d6fbb623de53f6f364d352309d4094dd4194040a10fd51833e418d49 \
     --hash=sha256:9f7ebbcd14fe59494226453aed97c1070d83f8d24b6fc3a3bcf9a38092641c4a
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   rich
 mdurl==0.1.2 \
     --hash=sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8 \
     --hash=sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   markdown-it-py
 opentelemetry-api==1.44.0 \
     --hash=sha256:67647e5e9566edcf421166fdf022b3537f818635daa852b289e34604dc6fb33a \
     --hash=sha256:94b98c893a91b88657eaac1e3ba89618cdb85be6918196705354f34728b2cdef
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   hexkit
 packaging==26.2 \
     --hash=sha256:5fc45236b9446107ff2415ce77c807cee2862cb6fac22b8a73826d0693b0980e \
     --hash=sha256:ff452ff5a3e828ce110190feff1178bb1f2ea2281fa2075aadb987c2fb221661
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   aiokafka
 pydantic==2.13.4 \
     --hash=sha256:45a282cde31d808236fd7ea9d919b128653c8b38b393d1c4ab335c62924d9aba \
     --hash=sha256:c40756b57adaa8b1efeeced5c196f3f3b7c435f90e84ea7f443901bec8099ef6
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   nos (pyproject.toml)
     #   ghga-event-schemas
     #   ghga-service-commons
@@ -401,20 +401,20 @@ pydantic-core==2.46.4 \
     --hash=sha256:fc3e9034a63de20e15e8ade85358bc6efc614008cab72898b4b4952bea0509ff \
     --hash=sha256:fd8b3d9fd264be37976686c7f65cd52a83f5e84f4bfd2adf9c1d469676bbb6ae
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   pydantic
 pydantic-settings==2.14.2 \
     --hash=sha256:a20c97b37910b6550d5ea50fbcc2d4187defe58cd57070b73863d069419c9440 \
     --hash=sha256:c19dd64b19097f1de80184f0cc7b0272a13ae6e170cbf240a3e27e381ed14a5f
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   ghga-event-schemas
     #   hexkit
 pygments==2.20.0 \
     --hash=sha256:6757cd03768053ff99f3039c1a36d6c0aa0b263438fcab17520b30a303a82b5f \
     --hash=sha256:81a9e26dd42fd28a23a2d169d86d7ac03b46e2f8b59ed4698fb4785f946d0176
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   rich
 pymongo==4.17.0 \
     --hash=sha256:0ff6bd2f735ab5356541e3e57d5b7dbfbc3f2ee1ccb10b6b0f82d58af69d1d8e \
@@ -489,13 +489,13 @@ pymongo==4.17.0 \
     --hash=sha256:faf03e4c2aafd6de626dbd30ba246d369ae33f47f10629d1bbe40f72115027a6 \
     --hash=sha256:ff5aa3f1c7e3f08eb0e7a016c91ba468b1850ccfd63d9b1f12f56350f4974cef
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   hexkit
 python-dotenv==1.2.2 \
     --hash=sha256:1d8214789a24de455a8b8bd8ae6fe3c6b69a5e3d64aa8a8e5d68e694bbcb285a \
     --hash=sha256:2c371a91fbd7ba082c2c1dc1f8bf89ca22564a087c2c287cd9b662adde799cf3
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   pydantic-settings
 pyyaml==6.0.3 \
     --hash=sha256:00c4bdeba853cc34e7dd471f16b4114f4162dc03e6b7afcc2128711f0eca823c \
@@ -572,20 +572,20 @@ pyyaml==6.0.3 \
     --hash=sha256:fa160448684b4e94d80416c0fa4aac48967a969efe22931448d853ada8baf926 \
     --hash=sha256:fc09d0aa354569bc501d4e787133afc08552722d3ab34836a80547331bb5d4a0
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   hexkit
 referencing==0.37.0 \
     --hash=sha256:381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231 \
     --hash=sha256:44aefc3142c5b842538163acb373e24cce6632bd54bdb01b21ad5863489f50d8
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   jsonschema
     #   jsonschema-specifications
 rich==15.0.0 \
     --hash=sha256:33bd4ef74232fb73fe9279a257718407f169c09b78a87ad3d296f548e27de0bb \
     --hash=sha256:edd07a4824c6b40189fb7ac9bc4c52536e9780fbbfbddf6f1e2502c31b068c36
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   typer
 rpds-py==2026.6.3 \
     --hash=sha256:0be972be84cfcaf46c8c6edf690ca0f154ac17babf1f6a955a51579b34ad2dc5 \
@@ -705,26 +705,26 @@ rpds-py==2026.6.3 \
     --hash=sha256:f90938e92afda60266da758ee7d363447f7f0138c9559f9e1811629580582d90 \
     --hash=sha256:faa679d19a6696fd54259ad321251ad77a13e70e03dd834daa762a44fb6196ef
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   jsonschema
     #   referencing
 shellingham==1.5.4 \
     --hash=sha256:7ecfff8f2fd72616f7481040475a65b2bf8af90a56c89140852d1120324e8686 \
     --hash=sha256:8dbca0739d487e5bd35ab3ca4b36e11c4078f3a234bfce294b0a0291363404de
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   typer
 typer==0.27.0 \
     --hash=sha256:629bd12ea5d13a17148125d9a264f949eb171fb3f120f9b04d85873cab054fa5 \
     --hash=sha256:6f4b27631e47f077871b7dc30e933ec0131c1390fbe0e387ea5574b5bac9ccf1
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   nos (pyproject.toml)
 typing-extensions==4.16.0 \
     --hash=sha256:481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8 \
     --hash=sha256:dc983d19a509c94dba722ee6abd33940f7c05a89e243c47e907eb4db6f1a43e5
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   aiokafka
     #   opentelemetry-api
     #   pydantic
@@ -734,6 +734,6 @@ typing-inspection==0.4.2 \
     --hash=sha256:4ed1cacbdc298c220f1bd249ed5287caa16f34d44ef4e9c3d0cbad5b521545e7 \
     --hash=sha256:ba561c48a67c5958007083d386c3295464928b01faa735ab8547c5692e87f464
     # via
-    #   -c /workspace/lock/requirements-dev.txt
+    #   -c lock/requirements-dev.txt
     #   pydantic
     #   pydantic-settings
